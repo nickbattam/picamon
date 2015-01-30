@@ -1,0 +1,7 @@
+record(stringin, "$(p):$(monitor)")
+{
+	field(DESC, "Analog input")
+	field(VAL, "$(camera)")
+	field(PINI, "YES")
+}
+
