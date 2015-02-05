@@ -1,8 +1,5 @@
 #!/usr/bin/python
 # monitor.py
-# 
-# 1. monitor PV corresponding to specific raspi
-# 2. 
 
 import numpy as np
 import epics
@@ -33,5 +30,5 @@ class Monitor(object):
 
   # camonitor the cameraname to know which camera to read
   # camonitor $(PREFIX):CAM1:arrayDate to get image stream
-	# camonitor $(PREFIX):CAM1:xsize/ysize to get image size
+  # camonitor $(PREFIX):CAM1:xsize/ysize to get image size
 
