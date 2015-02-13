@@ -1,0 +1,21 @@
+record(ai, "$(p):xsize")
+{
+	field(DESC, "image x-dimension")
+	field(VAL, 32)
+	field(PINI, "YES")
+}
+
+record(ai, "$(p):ysize")
+{
+	field(DESC, "image y-dimension")
+	field(VAL, 32)
+	field(PINI, "YES")
+}
+
+record(waveform, "$(p):arrayData")
+{
+	field(DESC, "image data")
+	field(NELM, "1024")
+	field(FTVL, "DOUBLE")
+	field(PINI, "YES")
+}
