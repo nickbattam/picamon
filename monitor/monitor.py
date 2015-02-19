@@ -8,25 +8,28 @@ from epics import pv
 from camera import Camera
 
 class Monitor(object):
-	''' monitor class to listen for broadcast insutrctions
+    ''' monitor class to listen for broadcast insutrctions
   from network with pv name and camera to stream from '''
 
-	def __init__(self):
-		self.pvprefix = "MON-CONTROL:"
-		self.monitorname = "PI1"
+    def __init__(self):
+        self.pvprefix = "MON-CONTROL:"
+        self.monitorname = "PI1"
 
-		self.camera_name = pv.PV(self.pvprefix + self.monitorname,
-			callback=self.update_camera)
+        self.camera = None
 
-	def update_camera(self, value, **kw):
-		self.camera.close()
-		self.camera = Camera(value)
+        self.camera_name = pv.PV(self.pvprefix + self.monitorname,
+            callback=self.update_camera)
 
-	def testimage(self, x=100, y=100):
-		return np.arange(x*y).reshape(x,y)
+    def update_camera(self, value, **kw):
+        if self.camera is not None:
+            self.camera.close()
+        self.camera = Camera(value)
 
-	def readPV(self):
-		return epics.caget(self.pvprefix + self.monitorname)
+    def testimage(self, x=100, y=100):
+        return np.arange(x*y).reshape(x,y)
+
+    def readPV(self):
+        return epics.caget(self.pvprefix + self.monitorname)
 
   # camonitor the cameraname to know which camera to read
   # camonitor $(PREFIX):CAM1:arrayDate to get image stream
