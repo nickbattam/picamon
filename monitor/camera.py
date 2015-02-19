@@ -1,5 +1,8 @@
+from pkg_resources import require
+require("numpy")
 
 from epics import pv
+import numpy as np
 
 
 class Camera(object):
@@ -40,10 +43,13 @@ class Camera(object):
         """ Get the current image data.
 
             Returns:
-            numpy array reshaped to the x,y dimensions
+            numpy array reshaped as (y,x) dimensions
             specified by the xsize and ysize PVs
+            
         """
-        data = self.data_pv.get()
-        x_size = self.xsize.get()
-        y_size = self.ysize.get()
-        return data.reshape(x_size, y_size)
+        cdata = self.data_pv.get()
+        x_size = self.xsize
+        y_size = self.ysize
+
+        data = np.array(cdata)
+        return data.reshape(y_size, x_size)
