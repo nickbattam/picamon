@@ -1,3 +1,6 @@
+from pkg_resources import require
+require("numpy")
+
 import numpy as np
 import sys
 import pygame
