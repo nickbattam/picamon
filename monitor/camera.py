@@ -19,9 +19,9 @@ class Camera(object):
             supplying $(prefix):arrayData, $(prefix):xsize and
             $(prefix):ysize PVs
         """
-        self.data_pv = pv.PV(prefix + ":arrayData")
-        self.xsize_pv = pv.PV(prefix + ":xsize")
-        self.ysize_pv = pv.PV(prefix + ":ysize")
+        self.data_pv = pv.PV(prefix + ":image1:ArrayData")
+        self.xsize_pv = pv.PV(prefix + ":cam1:SizeX")
+        self.ysize_pv = pv.PV(prefix + ":cam1:SizeY")
 
     def close(self):
         """ Close camerate instance, disconnecting monitors and
@@ -29,7 +29,7 @@ class Camera(object):
         """
         self.data_pv.disconnect()
         self.xsize_pv.disconnect()
-        self.ysize_pv.diconnect()
+        self.ysize_pv.disconnect()
 
     @property
     def xsize(self):
@@ -52,4 +52,6 @@ class Camera(object):
         y_size = self.ysize
 
         data = np.array(cdata)
-        return data.reshape(y_size, x_size)
+        reshaped = data.reshape(y_size, x_size).astype('int32')
+
+        return np.transpose(reshaped)

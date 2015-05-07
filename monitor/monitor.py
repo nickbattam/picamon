@@ -1,11 +1,7 @@
 #!/usr/bin/python
 # monitor.py
 from time import sleep
-
-import numpy as np
-import epics
-from epics import pv
-
+from epics.pv import PV
 from camera import Camera
 
 
@@ -23,14 +19,18 @@ class Monitor(object):
         self.camera = None
         self.plotter = plotter
 
-        self.camera_name = pv.PV(
-            control_pv,
-            callback=self.update_camera)
+        self.camera_name = PV(control_pv, callback=self.update_camera)
 
     def update_camera(self, value, **kw):
+        """ Update the camera object linked to the monitor
+
+            :param value: pv root for camera object
+            :param kw: unused kwargs argument, required by PyEpics.
+        """
         if self.camera is not None:
             self.camera.close()
         self.camera = Camera(value)
+        self.set_screensize(self.camera.xsize, self.camera.ysize)
 
     def run(self):
 
@@ -44,6 +44,4 @@ class Monitor(object):
         """
         if self.camera is not None:
             data = self.camera.get_image_data()
-            self.plotter.show(data,
-                              self.camera.xsize,
-                              self.camera.ysize)
+            self.plotter.show(data)

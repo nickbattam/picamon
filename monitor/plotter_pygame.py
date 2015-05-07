@@ -12,11 +12,12 @@ class PyGamePlotter(object):
         self._screen_size = (DEFAULT_XSIZE, DEFAULT_YSIZE)
         self._screen = pygame.display.set_mode(self._screen_size)
 
-    def show(self, data, xsize, ysize):
+    def set_screensize(self, xsize, ysize):
         screen_size = (xsize, ysize)
         if screen_size != self._screen_size:
             self._screen = pygame.display.set_mode(screen_size)
 
+    def show(self, data):
         pygame.surfarray.blit_array(self._screen, data)
         pygame.display.flip()
 
