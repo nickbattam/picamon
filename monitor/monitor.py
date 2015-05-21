@@ -18,6 +18,7 @@ class Monitor(object):
         """
         self.camera = None
         self.plotter = plotter
+        self._stop = False
 
         self.camera_name = PV(control_pv, callback=self.update_camera)
 
@@ -33,10 +34,20 @@ class Monitor(object):
         self.set_screensize(self.camera.xsize, self.camera.ysize)
 
     def run(self):
+        """ Refresh the image at 5Hz.
 
-        while True:
+            Updates continue until stop() is signalled
+        """
+        while not set._stop:
             self._update_image()
             sleep(0.2)
+        else:
+            self._stop = False
+
+    def stop(self):
+        """ Signal the monitor to stop refreshing
+        """
+        self._stop = True
 
     def _update_image(self):
         """ Grap latest image and size data from the camera and pass to
