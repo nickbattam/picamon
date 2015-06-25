@@ -1,7 +1,6 @@
 record(stringin, "$(p):$(monitor)")
 {
-	field(DESC, "Analog input")
+	field(DESC, "Camera IOC name")
 	field(VAL, "$(camera)")
 	field(PINI, "YES")
 }
-

@@ -8,31 +8,31 @@ include $(TOP)/configure/CONFIG
 #=============================
 # Build the IOC application
 
-PROD_IOC = picomon
-# picomon.dbd will be created and installed
-DBD += picomon.dbd
+PROD_IOC = picamon
+# picamon.dbd will be created and installed
+DBD += picamon.dbd
 
-# picomon.dbd will be made up from these files:
-picomon_DBD += base.dbd
+# picamon.dbd will be made up from these files:
+picamon_DBD += base.dbd
 
 # Include dbd files from all support applications:
-#picomon_DBD += xxx.dbd
+#picamon_DBD += xxx.dbd
 
 # Add all the support libraries needed by this IOC
-#picomon_LIBS += xxx
+#picamon_LIBS += xxx
 
-# picomon_registerRecordDeviceDriver.cpp derives from picomon.dbd
-picomon_SRCS += picomon_registerRecordDeviceDriver.cpp
+# picamon_registerRecordDeviceDriver.cpp derives from picamon.dbd
+picamon_SRCS += picamon_registerRecordDeviceDriver.cpp
 
 # Build the main IOC entry point on workstation OSs.
-picomon_SRCS_DEFAULT += picomonMain.cpp
-picomon_SRCS_vxWorks += -nil-
+picamon_SRCS_DEFAULT += picamonMain.cpp
+picamon_SRCS_vxWorks += -nil-
 
 # Add support from base/src/vxWorks if needed
-#picomon_OBJS_vxWorks += $(EPICS_BASE_BIN)/vxComLibrary
+#picamon_OBJS_vxWorks += $(EPICS_BASE_BIN)/vxComLibrary
 
 # Finally link to the EPICS Base libraries
-picomon_LIBS += $(EPICS_BASE_IOC_LIBS)
+picamon_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 #===========================
 

@@ -1,6 +1,6 @@
-#!../../bin/linux-x86_64/picomon
+#!../../bin/linux-x86_64/picamon
 
-## You may have to change picomon to something else
+## You may have to change picamon to something else
 ## everywhere it appears in this file
 
 < envPaths
@@ -8,8 +8,8 @@
 cd ${TOP}
 
 ## Register all support components
-dbLoadDatabase "dbd/picomon.dbd"
-picomon_registerRecordDeviceDriver pdbbase
+dbLoadDatabase "dbd/picamon.dbd"
+picamon_registerRecordDeviceDriver pdbbase
 
 ## Load record instances
 #dbLoadRecords("db/xxx.db","user=nickHost")
