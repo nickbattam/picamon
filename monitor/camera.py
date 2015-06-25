@@ -39,19 +39,23 @@ class Camera(object):
     def ysize(self):
         return self.ysize_pv.get()
 
-    def get_image_data(self):
+    def get_image_data(self, last_timestamp=None):
         """ Get the current image data.
 
             Returns:
             numpy array reshaped as (y,x) dimensions
-            specified by the xsize and ysize PVs
-            
+                specified by the xsize and ysize PVs
+            timestamp of data
         """
         cdata = self.data_pv.get()
-        x_size = self.xsize
-        y_size = self.ysize
+        image_data = None
+        timestamp = self.data_pv.timestamp
+        if last_timestamp is None or timestamp > last_timestamp:
+            x_size = self.xsize
+            y_size = self.ysize
 
-        data = np.array(cdata)
-        reshaped = data.reshape(y_size, x_size).astype('int32')
+            data = np.array(cdata)
+            reshaped = data.reshape(y_size, x_size).astype('int32')
+            image_data = np.transpose(reshaped)
 
-        return np.transpose(reshaped)
+        return image_data, timestamp
