@@ -31,14 +31,14 @@ class Monitor(object):
         if self.camera is not None:
             self.camera.close()
         self.camera = Camera(value)
-        self.set_screensize(self.camera.xsize, self.camera.ysize)
+        self.plotter.set_screensize(self.camera.xsize, self.camera.ysize)
 
     def run(self):
         """ Refresh the image at 5Hz.
 
             Updates continue until stop() is signalled
         """
-        while not set._stop:
+        while not self._stop:
             self._update_image()
             sleep(0.2)
         else:
