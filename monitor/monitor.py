@@ -54,5 +54,6 @@ class Monitor(object):
             the plotter
         """
         if self.camera is not None:
-            data = self.camera.get_image_data()
+            data, timestamp = self.camera.get_image_data()
             self.plotter.show(data)
+
