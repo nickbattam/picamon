@@ -19,10 +19,12 @@
 | CAMERA M                    +---------->+         +---->+ MONITOR N          +<--+
 +-----------------------------+           +---------+     +--------------------+   |
                                                                                    |
-             +-----------+            +---------------------------------+          |
-             |           |            | CONTROLLER                      |          |
-             | INTERFACE +<---------->+  IOC: CONTROLLER                +----------+
-             |           |            |  PVs: <monitorID> = <cameraIOC> |           
-             +-----------+            |                                 |           
-                                      +---------------------------------+           
+             +-----------+            +---------------------------------------+    |
+             |           |            | CONTROLLER                            |    |
+             | INTERFACE +<---------->+  IOC: CONTROLLER                      +----+
+             |           |            |  PVs: <monID> = <cameraIOC>           |
+             +-----------+            |       <monID>:RATE = refresh rate(Hz) |
+                                      |       <monID>:COLMAP = colourmap name |
+                                      |       COLORMAPS = list of all colmaps |
+                                      +---------------------------------------+
 ```
