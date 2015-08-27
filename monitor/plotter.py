@@ -7,5 +7,9 @@ class Plotter:
         plt.ion()
         plt.axis('off')
 
-    def show(data,xsize,ysize):
-        plt.show(data)
+    def set_image_size(self, xsize, ysize):
+        pass
+
+    def show(self, data):
+        plt.imshow(data)
+

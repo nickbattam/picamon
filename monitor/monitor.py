@@ -31,7 +31,7 @@ class Monitor(object):
         if self.camera is not None:
             self.camera.close()
         self.camera = Camera(value)
-        self.plotter.set_screensize(self.camera.xsize, self.camera.ysize)
+        self.plotter.set_image_size(self.camera.xsize, self.camera.ysize)
 
     def run(self):
         """ Refresh the image at 5Hz.
