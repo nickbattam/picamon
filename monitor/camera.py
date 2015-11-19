@@ -1,5 +1,5 @@
-from pkg_resources import require
-require("numpy")
+# from pkg_resources import require
+# require("numpy")
 
 from epics import pv
 import numpy as np
