@@ -1,0 +1,1 @@
+medm -x -macro "P=$1:, R=cam1:" prosilica.adl &

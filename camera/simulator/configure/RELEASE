@@ -1,0 +1,46 @@
+# RELEASE - Location of external support modules
+#
+# IF YOU MAKE ANY CHANGES to this file you must subsequently
+# do a "gnumake rebuild" in this application's top level
+# directory.
+#
+# The build process does not check dependencies against files
+# that are outside this application, thus you should do a
+# "gnumake rebuild" in the top level directory after EPICS_BASE
+# or any other external module pointed to below is rebuilt.
+#
+# Host- or target-specific settings can be given in files named
+#  RELEASE.$(EPICS_HOST_ARCH).Common
+#  RELEASE.Common.$(T_A)
+#  RELEASE.$(EPICS_HOST_ARCH).$(T_A)
+#
+# This file should ONLY define paths to other support modules,
+# or include statements that pull in similar RELEASE files.
+# Build settings that are NOT module paths should appear in a
+# CONFIG_SITE file.
+
+TEMPLATE_TOP=$(EPICS_BASE)/templates/makeBaseApp/top
+
+# Support modules
+SUPPORT=/usr/local/epics/support
+SNCSEQ=$(SUPPORT)/seq/seq-2.1.12
+
+# Use asyn r2251 for now to fix polling bug see tech talk thread re 8752 comms problem 20 Aug 2013
+#ASYN=$(SUPPORT)/asyn/asyn4-21
+ASYN=$(SUPPORT)/asyn/current
+
+AREA_DETECTOR=$(SUPPORT)/areaDetector/areaDetectorR1-9-1
+BUSY=$(SUPPORT)/busy/busy-1-6
+CALC=$(SUPPORT)/calc/calc-3-2
+SSCAN=$(SUPPORT)/sscan/sscan-2-9
+AUTOSAVE=$(SUPPORT)/autosave/autosave-5-1
+MOTOR=$(SUPPORT)/motor/motorR6-8
+FFMPEGSERVER=$(SUPPORT)/ffmpegServer/ffmpegServer-1-9
+ADPYTHON=$(SUPPORT)/adPython/current/
+
+# EPICS_BASE usually appears last so other apps can override stuff:
+EPICS_BASE=/usr/local/epics/base
+
+# Set RULES here if you want to take build rules from somewhere
+# other than EPICS_BASE:
+#RULES=/path/to/epics/support/module/rules/x-y

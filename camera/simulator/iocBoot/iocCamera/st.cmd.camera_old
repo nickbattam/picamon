@@ -1,0 +1,73 @@
+cd ${TOP}
+
+# Common parameters for all steering cameras
+epicsEnvSet("QSIZE",  "20")
+epicsEnvSet("XSIZE",  "1292")
+epicsEnvSet("YSIZE",  "964")
+epicsEnvSet("ARRAYSIZE",  "1245488")
+epicsEnvSet("NCHANS", "2048")
+
+## Load record instances
+#dbLoadRecords("db/xxx.db","user=swdevHost")
+
+# Create a simDetector driver
+# NORMALLY COMMENTED OUT!
+# simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int dataType,
+#                   int maxBuffers, int maxMemory, int priority, int stackSize)
+#simDetectorConfig("$(PREFIX)CAM", $(XSIZE), $(YSIZE), 1, 0, 0)
+#dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/ADBase.template","P=$(PREFIX),R=cam1:,PORT=$(PREFIX)CAM,ADDR=0,TIMEOUT=1")
+#dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/simDetector.template","P=$(PREFIX),R=cam1:,PORT=$(PREFIX)CAM,ADDR=0,TIMEOUT=1")
+
+# Create a Prosilica driver
+###########################
+prosilicaConfig("$(PREFIX)CAM", $(CAMID), 50, 0)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/ADBase.template","P=$(PREFIX),R=cam1:,PORT=$(PREFIX)CAM,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template","P=$(PREFIX),R=cam1:,PORT=$(PREFIX)CAM,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/prosilica.template","P=$(PREFIX),R=cam1:,PORT=$(PREFIX)CAM,ADDR=0,TIMEOUT=1,TRSCAN=Passive")
+
+# Create an ROI plugin
+######################
+NDROIConfigure("$(PREFIX)ROI", $(QSIZE), 0, "$(PREFIX)CAM", 0, 0, 0)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=$(PREFIX),R=ROI1:,  PORT=$(PREFIX)ROI,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PREFIX)CAM,NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROI.template","P=$(PREFIX),R=ROI1:,PORT=$(PREFIX)ROI,ADDR=0,TIMEOUT=1")
+
+# Create a standard arrays plugin, set it to get data from the camera driver.
+#############################################################################
+#NDStdArraysConfigure (const char *portName, int queueSize, int blockingCallbacks, 
+#                      const char *NDArrayPort, int NDArrayAddr, size_t maxMemory, 
+#                      int priority, int stackSize)
+NDStdArraysConfigure("$(PREFIX)Image", 3, 0, "$(PREFIX)ROI", 0, 0)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=$(PREFIX),R=image1:,PORT=$(PREFIX)Image,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PREFIX)ROI,NDARRAY_ADDR=0")
+
+# This creates a waveform large enough for XSIZExYSIZEx1 (e.g. mono) arrays.
+# This waveform only allows transporting 8-bit images
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=$(PREFIX),R=image1:,PORT=$(PREFIX)Image,ADDR=0,TIMEOUT=1,TYPE=Int8,FTVL=UCHAR,NELEMENTS=$(ARRAYSIZE)")
+
+# Create a processing plugin
+############################
+NDProcessConfigure("$(PREFIX)PROC", $(QSIZE), 0, "$(PREFIX)ROI", 0, 0, 0)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=$(PREFIX),R=Proc1:,  PORT=$(PREFIX)PROC,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PREFIX)ROI,NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDProcess.template","P=$(PREFIX),R=Proc1:,  PORT=$(PREFIX)PROC,ADDR=0,TIMEOUT=1")
+
+# Create a statistics plugin
+############################
+NDStatsConfigure("$(PREFIX)STATS", $(QSIZE), 0, "$(PREFIX)ROI", 0, 0, 0)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=$(PREFIX),R=Stats1:, PORT=$(PREFIX)STATS,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PREFIX)ROI,NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStats.template","P=$(PREFIX),R=Stats1:, PORT=$(PREFIX)STATS,ADDR=0,TIMEOUT=1,HIST_SIZE=256,XSIZE=$(XSIZE),YSIZE=$(YSIZE),NCHANS=$(NCHANS)")
+
+# Create an overlay plugin with 1 overlay for the centroid
+##########################################################
+NDOverlayConfigure("$(PREFIX)OVER", $(QSIZE), 0, "$(PREFIX)ROI", 0, 1, 0, 0)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=$(PREFIX),R=Over1:, PORT=$(PREFIX)OVER,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PREFIX)ROI,NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDOverlay.template","P=$(PREFIX),R=Over1:, PORT=$(PREFIX)OVER,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDOverlayN.template","P=$(PREFIX),R=Over1:1:,NAME=Centroid,SHAPE=0,O=Over1:,XPOS=$(PREFIX)Stats1:CentroidX_RBV,YPOS=$(PREFIX)Stats1:CentroidY_RBV,XSIZE=$(PREFIX)Stats1:SigmaX_RBV,YSIZE=$(PREFIX)Stats1:SigmaY_RBV,PORT=$(PREFIX)OVER,ADDR=0,TIMEOUT=1")
+
+# Create a JPEG file saving plugin
+##################################
+NDFileJPEGConfigure("$(PREFIX)FileJPEG", $(QSIZE), 0, "$(PREFIX)ROI", 0)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=$(PREFIX),R=JPEG1:,PORT=$(PREFIX)FileJPEG,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PREFIX)ROI,NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template","P=$(PREFIX),R=JPEG1:,PORT=$(PREFIX)FileJPEG,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFileJPEG.template","P=$(PREFIX),R=JPEG1:,PORT=$(PREFIX)FileJPEG,ADDR=0,TIMEOUT=1")
+
+cd ${TOP}/iocBoot/${IOC}
+

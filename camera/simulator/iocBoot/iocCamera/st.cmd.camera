@@ -1,0 +1,84 @@
+cd ${TOP}
+
+## AreaDetector Plugins. Current Path(s):
+## CAM -> ROI -> TRANS -> OVER -> Image1
+##                     -> Image2
+##                     -> STATS
+
+# Common parameters for all steering cameras
+epicsEnvSet("QSIZE",  "20")
+epicsEnvSet("XSIZE",  "400")
+epicsEnvSet("YSIZE",  "400")
+epicsEnvSet("ARRAYSIZE",  "160000")
+epicsEnvSet("NCHANS", "2048")
+
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/ADBase.template","P=$(PREFIX),R=cam1:,PORT=$(PREFIX)CAM,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template","P=$(PREFIX),R=cam1:,PORT=$(PREFIX)CAM,ADDR=0,TIMEOUT=1")
+
+# Simulation driver
+####################
+simDetectorConfig("$(PREFIX)CAM",$(XSIZE),$(YSIZE),0,0,0)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/simDetector.template","P=$(PREFIX),R=cam1:,PORT=$(PREFIX)CAM,ADDR=0,TIMEOUT=1")
+
+# Prosilica driver
+###########################
+#prosilicaConfig("$(PREFIX)CAM", $(CAMID), 50, 0)
+#dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/prosilica.template","P=$(PREFIX),R=cam1:,PORT=$(PREFIX)CAM,ADDR=0,TIMEOUT=1,TRSCAN=Passive")
+
+# ROI plugin
+######################
+NDROIConfigure("$(PREFIX)ROI", $(QSIZE), 0, "$(PREFIX)CAM", 0, 0, 0)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=$(PREFIX),R=ROI1:,  PORT=$(PREFIX)ROI,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PREFIX)CAM,NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROI.template","P=$(PREFIX),R=ROI1:,PORT=$(PREFIX)ROI,ADDR=0,TIMEOUT=1")
+
+# rotation plugin - Large queue causes image delay
+# #####################################################################
+NDTransformConfigure("$(PREFIX)TRANS", 2, 0, "$(PREFIX)ROI", 0, 0, 0, 0)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template", "P=$(PREFIX),R=Trans1:, PORT=$(PREFIX)TRANS, ADDR=0, TIMEOUT=1, NDARRAY_PORT=$(PREFIX)ROI, NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDTransform.template", "P=$(PREFIX),R=Trans1:, PORT=$(PREFIX)TRANS, ADDR=0, TIMEOUT=1")
+
+# statistics plugin
+############################
+NDStatsConfigure("$(PREFIX)STATS", $(QSIZE), 0, "$(PREFIX)TRANS", 0, 0, 0)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=$(PREFIX),R=Stats1:, PORT=$(PREFIX)STATS,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PREFIX)TRANS,NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStats.template","P=$(PREFIX),R=Stats1:, PORT=$(PREFIX)STATS,ADDR=0,TIMEOUT=1,HIST_SIZE=256,XSIZE=2000, YSIZE=2000, NCHANS=$(NCHANS)")
+
+# Image2 plugin - So centroid algorithm has image without overlays
+##################################################################
+NDStdArraysConfigure("$(PREFIX)Image2", 3, 0, "$(PREFIX)TRANS", 0, 0)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=$(PREFIX),R=image2:,PORT=$(PREFIX)Image2,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PREFIX)TRANS,NDARRAY_ADDR=0")
+
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=$(PREFIX),R=image2:,PORT=$(PREFIX)Image2,ADDR=0,TIMEOUT=1,TYPE=Int8,FTVL=UCHAR,NELEMENTS=$(ARRAYSIZE)")
+
+# Create an overlay plugin with 1 overlay for the centroid
+##########################################################
+NDOverlayConfigure("$(PREFIX)OVER", $(QSIZE), 0, "$(PREFIX)TRANS", 0, 9, 0, 0)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=$(PREFIX),R=Over1:, PORT=$(PREFIX)OVER,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PREFIX)TRANS,NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDOverlay.template","P=$(PREFIX),R=Over1:, PORT=$(PREFIX)OVER,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDOverlayN.template","P=$(PREFIX),R=Over1:1:,NAME=SoftRef,SHAPE=0,O=Over1:,XSIZE=$(PREFIX)CROSSHAIR_SIZE_X, YSIZE=$(PREFIX)CROSSHAIR_SIZE_Y, XPOS=$(PREFIX)SOFT_REF_X,YPOS=$(PREFIX)SOFT_REF_Y,PORT=$(PREFIX)OVER,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDOverlayN.template","P=$(PREFIX),R=Over1:2:,NAME=SoftRef,SHAPE=0,O=Over1:,XSIZE=$(PREFIX)CROSSHAIR_SIZE_X, YSIZE=$(PREFIX)CROSSHAIR_SIZE_Y, XPOS=$(PREFIX)SOFT_REF_X_PLUS,YPOS=$(PREFIX)SOFT_REF_Y_PLUS,PORT=$(PREFIX)OVER,ADDR=1,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDOverlayN.template","P=$(PREFIX),R=Over1:3:,NAME=SoftRef,SHAPE=0,O=Over1:,XSIZE=$(PREFIX)CROSSHAIR_SIZE_X, YSIZE=$(PREFIX)CROSSHAIR_SIZE_Y, XPOS=$(PREFIX)SOFT_REF_X_MINUS,YPOS=$(PREFIX)SOFT_REF_Y_MINUS,PORT=$(PREFIX)OVER,ADDR=2,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDOverlayN.template","P=$(PREFIX),R=Over1:4:,NAME=SoftRef,SHAPE=0,O=Over1:,XSIZE=$(PREFIX)CROSSHAIR_SIZE_X, YSIZE=$(PREFIX)CROSSHAIR_SIZE_Y, XPOS=$(PREFIX)Stats1:CursorX,YPOS=$(PREFIX)Stats1:CursorY,PORT=$(PREFIX)OVER,ADDR=3,TIMEOUT=1")
+cd ${TOP}/iocBoot/${IOC}
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDOverlayN.template","P=$(PREFIX),R=Over1:5:,NAME=SoftRef,SHAPE=0,O=Over1:,XSIZE=$(PREFIX)CROSSHAIR_SIZE_X, YSIZE=$(PREFIX)CROSSHAIR_SIZE_Y, XPOS=$(PREFIX)PROF_X_PLUS,YPOS=$(PREFIX)PROF_Y_PLUS,PORT=$(PREFIX)OVER,ADDR=4,TIMEOUT=1")
+cd ${TOP}/iocBoot/${IOC}
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDOverlayN.template","P=$(PREFIX),R=Over1:6:,NAME=SoftRef,SHAPE=0,O=Over1:,XSIZE=$(PREFIX)CROSSHAIR_SIZE_X, YSIZE=$(PREFIX)CROSSHAIR_SIZE_Y, XPOS=$(PREFIX)PROF_X_MINUS,YPOS=$(PREFIX)PROF_Y_MINUS,PORT=$(PREFIX)OVER,ADDR=5,TIMEOUT=1")
+cd ${TOP}/iocBoot/${IOC}
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDOverlayN.template", "P=$(PREFIX),R=Over1:7:,NAME=Box,SHAPE=1,O=Over1:,XSIZE=$(PREFIX)RECTANGLE_SIZEX,YSIZE=$(PREFIX)RECTANGLE_SIZEY,XPOS=$(PREFIX)RECT_X,YPOS=$(PREFIX)RECT_Y,PORT=$(PREFIX)OVER,ADDR=6,TIMEOUT=1")
+ cd ${TOP}/iocBoot/${IOC}
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDOverlayN.template", "P=$(PREFIX),R=Over1:8:,NAME=Box,SHAPE=1,O=Over1:,XSIZE=$(PREFIX)RECTANGLE_SIZE_PLUSX,YSIZE=$(PREFIX)RECTANGLE_SIZE_PLUSY,XPOS=$(PREFIX)RECT_X_PLUS,YPOS=$(PREFIX)RECT_Y_PLUS,PORT=$(PREFIX)OVER,ADDR=7,TIMEOUT=1")
+ cd ${TOP}/iocBoot/${IOC}
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDOverlayN.template", "P=$(PREFIX),R=Over1:9:,NAME=Box,SHAPE=1,O=Over1:,XSIZE=$(PREFIX)RECTANGLE_SIZE_MINUSX,YSIZE=$(PREFIX)RECTANGLE_SIZE_MINUSY,XPOS=$(PREFIX)RECT_X_MINUS,YPOS=$(PREFIX)RECT_Y_MINUS,PORT=$(PREFIX)OVER,ADDR=8,TIMEOUT=1")
+
+# standard arrays plugin
+#############################################################################
+#NDStdArraysConfigure (const char *portName, int queueSize, int blockingCallbacks, 
+#                      const char *NDArrayPort, int NDArrayAddr, size_t maxMemory, 
+#                      int priority, int stackSize)
+NDStdArraysConfigure("$(PREFIX)Image", 3, 0, "$(PREFIX)OVER", 0, 0)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=$(PREFIX),R=image1:,PORT=$(PREFIX)Image,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PREFIX)OVER,NDARRAY_ADDR=0")
+
+# This creates a waveform large enough for XSIZExYSIZEx1 (e.g. mono) arrays.
+# This waveform only allows transporting 8-bit images
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=$(PREFIX),R=image1:,PORT=$(PREFIX)Image,ADDR=0,TIMEOUT=1,TYPE=Int8,FTVL=UCHAR,NELEMENTS=$(ARRAYSIZE)")
+

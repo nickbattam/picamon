@@ -1,0 +1,11 @@
+$(cam):UseCustomCentroid
+$(cam):$(suffix):CentroidDownsampleX
+$(cam):$(suffix):CentroidDownsampleY
+$(cam):$(suffix):CentroidMethod
+$(cam):$(suffix):CentroidThreshold
+$(cam):$(suffix):CentroidThreshInc
+$(cam):$(suffix):CentroidMinFract
+$(cam):$(suffix):CentroidMaxFract
+$(cam):$(suffix):CentroidSuccessive
+$(cam):$(suffix):CentroidCogDist
+$(cam):$(suffix):CentroidRectanglePercent
