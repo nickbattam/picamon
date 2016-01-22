@@ -17,6 +17,18 @@ class PyGamePlotter(object):
         if screen_size != self._screen_size:
             self._screen = pygame.display.set_mode(screen_size)
 
+    def blank(self):
+        self._screen.fill((0,0,0))
+
+        font = pygame.font.Font(None, 50)
+        text = font.render("No Camera Selected",1,(255,255,255))
+        textpos = text.get_rect()
+        textpos.centerx = self._screen.get_rect().centerx
+        textpos.centery = self._screen.get_rect().centery
+        self._screen.blit(text, textpos)
+
+        pygame.display.flip()
+
     def show(self, data):
         pygame.surfarray.blit_array(self._screen, data)
         pygame.display.flip()
