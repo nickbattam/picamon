@@ -9,5 +9,7 @@ Then run the st.cmd script. This will run the IOC and broadcast the set of camer
 image array is available @ X2-CAM:image1:ArrayData
 dimensions are available @ X2-CAM:cam1:SizeX and X2-CAM:cam1:SizeY
 
+There are 2 scripts, st.cmd and st2.cmd, starting an IOC for a camera called X1-CAM, another IOC for a camera called X2-CAM
+
 
 
