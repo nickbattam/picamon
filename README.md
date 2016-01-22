@@ -21,7 +21,7 @@
                                                                                    |
              +-----------+            +---------------------------------------+    |
              |           |            | CONTROLLER                            |    |
-             | INTERFACE +<---------->+  IOC: CONTROLLER                      +----+
+             |    GUI    +<---------->+  IOC: CONTROLLER                      +----+
              |           |            |  PVs: <monID> = <cameraIOC>           |
              +-----------+            |       <monID>:RATE = refresh rate(Hz) |
                                       |       <monID>:COLMAP = colourmap name |
