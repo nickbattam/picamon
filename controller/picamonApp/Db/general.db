@@ -1,0 +1,18 @@
+record(mbbi, "$(p):COLORMAPS")
+{
+    field(DESC, "List of colourmaps")
+    field(ZRST, "autumn")
+    field(ONST, "bone")
+    field(TWST, "cool")
+    field(THST, "copper")
+    field(FRST, "flag")
+    field(FVST, "gray")
+    field(SXST, "hot")
+    field(SVST, "hsv")
+    field(EIST, "jet")
+    field(NIST, "pink")
+    field(TEST, "prism")
+    field(ELST, "spring")
+    field(TVST, "summer")
+    field(TTST, "winter")
+}

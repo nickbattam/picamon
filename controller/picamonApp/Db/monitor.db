@@ -1,0 +1,23 @@
+record(stringin, "$(p):$(monitor):CAMERA")
+{
+    field(DESC, "Camera IOC prefix")
+    field(VAL, "")
+    field(PINI, "YES")
+}
+
+record(ai, "$(p):$(monitor):RATE")
+{
+    field(DESC, "Refresh rate for monitor")
+    field(VAL, "1")
+    field(EGU, "sec")
+    field(PINI, "YES")
+}
+
+record(stringin, "$(p):$(monitor):COLORMAP")
+{
+    field(DESC, "Name of colourmap to use for this monitor")
+    field(VAL, "jet")
+	field(PINI, "YES")
+}
+
+
