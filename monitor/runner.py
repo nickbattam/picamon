@@ -18,16 +18,21 @@ if __name__ == "__main__":
     while True:
         try:
 
-            camera_name = controller.camera
+            # check for quit events
+            if plotter.i_shall_continue()==False: break
 
+            # get camera name, set blank screen if none
+            camera_name = controller.camera
             if not camera_name:
                 plotter.blank()
                 sleep(0.1)
                 continue
-
             camera = Camera(camera_name)
+            
+            # update screen size
             plotter.set_screensize(camera.xsize, camera.ysize)
-
+            
+            # update data
             data, timestamp = camera.get_image_data()
             if timestamp != old_timestamp:
                 plotter.show(data)
@@ -37,5 +42,6 @@ if __name__ == "__main__":
 
         except KeyboardInterrupt:
             if camera: camera.close()
-            sys.exit()
+            plotter.quit()
 
+    plotter.quit()
