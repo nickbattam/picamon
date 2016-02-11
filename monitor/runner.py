@@ -28,10 +28,10 @@ if __name__ == "__main__":
                 sleep(0.1)
                 continue
             camera = Camera(camera_name)
-            
-            # update screen size
-            plotter.set_screensize(camera.xsize, camera.ysize)
-            
+
+            # update colormap
+            #plotter.set_colormap("something")
+
             # update data
             data, timestamp = camera.get_image_data()
             if timestamp != old_timestamp:
