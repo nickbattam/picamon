@@ -15,7 +15,7 @@ record(ai, "$(p):$(monitor):RATE")
 
 record(stringin, "$(p):$(monitor):COLORMAP")
 {
-    field(DESC, "Name of colourmap to use for this monitor")
+    field(DESC, "colourmap name")
     field(VAL, "jet")
 	field(PINI, "YES")
 }

@@ -1,19 +1,23 @@
 import pygame
 from pygame.locals import *
+from epics import pv
 
-DEFAULT_COLORMAP = [Color(i,i,i) for i in range(256)]
+DEFAULT_COLORMAP = [Color(255-i,255-i,255-i) for i in range(256)]
 
 class PyGamePlotter(object):
 
     def __init__(self):
         pygame.init()
-	pygame.mouse.set_visible(False)
-        self._screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN|pygame.NOFRAME)
+        pygame.mouse.set_visible(False)
 
-	info = pygame.display.Info()
-	self._screen_size = (info.current_w,info.current_h)
+        info = pygame.display.Info()
+        #self._screen_size = (info.current_w,info.current_h)
+        self._screen_size = (400,400)
 
-	self._palette = DEFAULT_COLORMAP
+        self._screen = pygame.display.set_mode(self._screen_size)
+        #self._screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN|pygame.NOFRAME)
+
+        self._palette = DEFAULT_COLORMAP
 
     def blank(self):
         self._screen.fill((0,0,0))
@@ -29,15 +33,17 @@ class PyGamePlotter(object):
 
 
     def set_colormap(self,colormap):
-	self._palette = [Color(i,i,255-i) for i in range(256)]
-
+        self._palette = [Color("0x" + colormap[i]) for i in range(256)]
 
     def show(self, data):
-        surf = pygame.surfarray.make_surface(data)
-        surf.set_palette(self._palette)
-	surf = pygame.transform.scale(surf,self._screen_size)
-        self._screen.blit(surf, (0,0)) 
-	pygame.display.flip()
+        try:
+            surf = pygame.surfarray.make_surface(data)
+            surf.set_palette(self._palette)
+            surf = pygame.transform.scale(surf,self._screen_size)
+            self._screen.blit(surf, (0,0)) 
+            pygame.display.flip()
+        except:
+            pass
 
 
     def i_shall_continue(self):

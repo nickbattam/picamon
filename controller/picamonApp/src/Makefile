@@ -16,13 +16,14 @@ DBD += picamon.dbd
 picamon_DBD += base.dbd
 
 # Include dbd files from all support applications:
-#picamon_DBD += xxx.dbd
+picamon_DBD += asub.dbd
 
 # Add all the support libraries needed by this IOC
 #picamon_LIBS += xxx
 
 # picamon_registerRecordDeviceDriver.cpp derives from picamon.dbd
 picamon_SRCS += picamon_registerRecordDeviceDriver.cpp
+picamon_SRCS += picamon.c
 
 # Build the main IOC entry point on workstation OSs.
 picamon_SRCS_DEFAULT += picamonMain.cpp

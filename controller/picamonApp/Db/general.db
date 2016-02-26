@@ -1,18 +1,55 @@
-record(mbbi, "$(p):COLORMAPS")
+record(aSub, "$(p):CMAP:READ")
 {
-    field(DESC, "List of colourmaps")
-    field(ZRST, "autumn")
-    field(ONST, "bone")
-    field(TWST, "cool")
-    field(THST, "copper")
-    field(FRST, "flag")
-    field(FVST, "gray")
-    field(SXST, "hot")
-    field(SVST, "hsv")
-    field(EIST, "jet")
-    field(NIST, "pink")
-    field(TEST, "prism")
-    field(ELST, "spring")
-    field(TVST, "summer")
-    field(TTST, "winter")
+    field(SNAM, "readcmap")
+    field(PINI, "YES")
+    field(OUTA, "$(p):CMAP:GRAY")
+    field(FTVA, "STRING")
+    field(NOVA, "256")
+
+    field(OUTB, "$(p):CMAP:JET")
+    field(NOVB, "256")
+    field(FTVB, "STRING")
+
+    field(OUTC, "$(p):CMAP:HOT")
+    field(NOVC, "256")
+    field(FTVC, "STRING")
+
+    field(OUTD, "$(p):CMAP:REDBLUE")
+    field(NOVD, "256")
+    field(FTVD, "STRING")
+
+    field(OUTE, "$(p):CMAP:BONE")
+    field(NOVE, "256")
+    field(FTVE, "STRING")
 }
+
+record(waveform, "$(p):CMAP:GRAY")
+{
+    field(NELM, "256")
+    field(FTVL, "STRING")
+}
+
+record(waveform, "$(p):CMAP:JET")
+{
+    field(NELM, "256")
+    field(FTVL, "STRING")
+}
+
+record(waveform, "$(p):CMAP:HOT")
+{
+    field(NELM, "256")
+    field(FTVL, "STRING")
+}
+
+record(waveform, "$(p):CMAP:REDBLUE")
+{
+    field(NELM, "256")
+    field(FTVL, "STRING")
+}
+
+record(waveform, "$(p):CMAP:BONE")
+{
+    field(NELM, "256")
+    field(FTVL, "STRING")
+}
+

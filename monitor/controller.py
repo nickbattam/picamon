@@ -5,18 +5,35 @@ class Controller(object):
     """
 
     def __init__(self, prefix, monitor):
+
+        self.prefix = prefix
+        self.monitor = monitor
+
         self.camera_pv = pv.PV(prefix + ":" + monitor + ":CAMERA")
         self.rate_pv = pv.PV(prefix + ":" + monitor + ":RATE")
+        self.colourmap_pv = pv.PV(prefix + ":" + monitor + ":COLORMAP")
 
     def close(self):
         self.camera_pv.disconnect()
         self.rate_pv.disconnect()
+        self.colourmap_pv.disconnect()
 
     @property
-    def camera(self):
-        return self.camera_pv.get()
+    def camera(self): return self.camera_pv.get()
 
     @property
-    def rate(self):
-        return self.rate_pv.get()
+    def rate(self): return self.rate_pv.get()
+
+    @property
+    def colourmap_name(self):
+        return self.colourmap_pv.get()
+
+    @property
+    def colourmap_data(self): 
+        cmap_name = self.colourmap_name
+        cmap_pv = pv.PV(self.prefix + ":CMAP:" + str(cmap_name).upper())
+        data = cmap_pv.get()
+        cmap_pv.disconnect()
+        return data
+        
 

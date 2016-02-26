@@ -17,6 +17,7 @@ dbLoadRecords "db/general.db", "p=MON-CONTROL"
 dbLoadRecords "db/monitor.db", "p=MON-CONTROL, monitor=PI1"
 dbLoadRecords "db/monitor.db", "p=MON-CONTROL, monitor=PI2"
 
+# dbLoadTemplate("BOut.substitutions")
 
 cd ${TOP}/iocBoot/${IOC}
 iocInit

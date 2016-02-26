@@ -14,6 +14,7 @@ if __name__ == "__main__":
 
     plotter = PyGamePlotter()
 	
+    old_cmap = ""
     old_timestamp = -1
     while True:
         try:
@@ -25,13 +26,15 @@ if __name__ == "__main__":
             camera_name = controller.camera
             if not camera_name:
                 plotter.blank()
-                sleep(0.1)
                 continue
             camera = Camera(camera_name)
 
             # update colormap
-            #plotter.set_colormap("something")
-
+            cmap = controller.colourmap_name
+            if cmap != old_cmap:
+                old_cmap = cmap
+                plotter.set_colormap(controller.colourmap_data)
+            
             # update data
             data, timestamp = camera.get_image_data()
             if timestamp != old_timestamp:
