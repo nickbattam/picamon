@@ -12,7 +12,7 @@ if __name__ == "__main__":
 
     controller = Controller(prefix, monitor)
 
-    plotter = PyGamePlotter()
+    plotter = PyGamePlotter(monitor)
 	
     old_cmap = ""
     old_timestamp = -1
@@ -34,13 +34,17 @@ if __name__ == "__main__":
             if cmap != old_cmap:
                 old_cmap = cmap
                 plotter.set_colormap(controller.colourmap_data)
-            
+                    
+            # update aspect ratio
+            plotter.set_aspect_ratio(controller.aspect)
+
             # update data
             data, timestamp = camera.get_image_data()
             if timestamp != old_timestamp:
                 plotter.show(data)
                 old_timestamp = timestamp
 
+            # refresh rate
             sleep(controller.rate)
 
         except KeyboardInterrupt:
@@ -48,3 +52,4 @@ if __name__ == "__main__":
             plotter.quit()
 
     plotter.quit()
+

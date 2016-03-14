@@ -20,4 +20,10 @@ record(stringin, "$(p):$(monitor):COLORMAP")
 	field(PINI, "YES")
 }
 
+record(bi, "$(p):$(monitor):ASPECT")
+{
+    field(DESC, "0: stretch to full screen, 1: keep aspect ratio")
+    field(VAL, "0")
+    field(PINI, "YES")
+}
 

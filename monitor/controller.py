@@ -12,17 +12,22 @@ class Controller(object):
         self.camera_pv = pv.PV(prefix + ":" + monitor + ":CAMERA")
         self.rate_pv = pv.PV(prefix + ":" + monitor + ":RATE")
         self.colourmap_pv = pv.PV(prefix + ":" + monitor + ":COLORMAP")
+        self.aspect_pv = pv.PV(prefix + ":" + monitor + ":ASPECT")
 
     def close(self):
         self.camera_pv.disconnect()
         self.rate_pv.disconnect()
         self.colourmap_pv.disconnect()
+        self.aspect_pv.disconnect()
 
     @property
     def camera(self): return self.camera_pv.get()
 
     @property
     def rate(self): return self.rate_pv.get()
+
+    @property
+    def aspect(self): return self.aspect_pv.get()
 
     @property
     def colourmap_name(self):
