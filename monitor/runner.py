@@ -41,10 +41,15 @@ if __name__ == "__main__":
             # update data
             data, timestamp = camera.get_image_data()
             if timestamp != old_timestamp:
-                plotter.show(data)
+                plotter.process(data)
                 old_timestamp = timestamp
 
-            # refresh rate
+            # udpate label info
+            if controller.label==1:
+                plotter.show_label(camera_name)
+
+            # show and wait
+            plotter.show()
             sleep(controller.rate)
 
         except KeyboardInterrupt:

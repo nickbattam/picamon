@@ -22,8 +22,21 @@ record(stringin, "$(p):$(monitor):COLORMAP")
 
 record(bi, "$(p):$(monitor):ASPECT")
 {
-    field(DESC, "0: stretch to full screen, 1: keep aspect ratio")
+    field(DESC, "speficy whether to stretch to full screen or keep aspect ratio")
     field(VAL, "0")
     field(PINI, "YES")
+    field(ZNAM, "stretched to full screen")
+    field(ONAM, "Keeping the aspect ratio")
 }
+
+record(bi, "$(p):$(monitor):LABEL")
+{
+    field(DESC, "specify whether to display the label or not")
+    field(VAL, "0")
+    field(PINI, "YES")
+    field(ZNAM, "label not displayed")
+    field(ONAM, "label displayed")
+}
+
+
 
