@@ -1,3 +1,14 @@
+
+# PiCaMon
+
+A Raspberry Pi based camera monitoring system. The idea is to be able to display EPICS camera feed (based on AreaDetector) on Raspberry Pi controlled monitors from a remote interface.
+
+## Concept
+
+[![Concept](https://j.gifs.com/82Ozxr.gif)](https://www.youtube.com/watch?v=pTWhWKSA5Z8)
+
+## Setup overview
+
 ```
 +-----------------------------+           +---------+     +--------------------+    
 | CAMERA 1                    |           |         |     | MONITOR 1          |    
