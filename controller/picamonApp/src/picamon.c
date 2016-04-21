@@ -13,7 +13,8 @@ static long _readcmap(char filename[],void *destination)
     FILE *fp;
     int i,j;
 
-    char delimiters[] = " \t,;-";
+    const char DELIMITERS[] = " \t,;-";
+    const int MAX_STRING_LENGTH = 40;
 
     // open file and make sure it's opened properly
     fp = fopen(filename,"r");
@@ -36,17 +37,17 @@ static long _readcmap(char filename[],void *destination)
         // split input line into tokens
         // convert rgb values to hexadecimal string
         char *pch;
-        pch = strtok(buffer, delimiters);
+        pch = strtok(buffer, DELIMITERS);
         i=0;
         while(pch != NULL)
         {          
             sprintf(&rgb[i], "%02x", atoi(pch));
-            pch = strtok(NULL, delimiters);
+            pch = strtok(NULL, DELIMITERS);
             i = i+2;
         }
    
         // copy hexadecimal string into record output VALA
-        memcpy(destination+40*j,rgb,40*sizeof(char));
+        memcpy(destination+MAX_STRING_LENGTH*j, rgb, MAX_STRING_LENGTH*sizeof(char));
         j++;
 
     }
@@ -59,11 +60,12 @@ static long _readcmap(char filename[],void *destination)
 
 static long readcmap(aSubRecord *prec)
 {
-    _readcmap("gray",prec->vala);
-    _readcmap("jet",prec->valb);
-    _readcmap("hot",prec->valc);
-    _readcmap("coolwarm",prec->vald);
-    _readcmap("bone",prec->vale);
+
+    _readcmap("colormaps/gray",prec->vala);
+    _readcmap("colormaps/jet",prec->valb);
+    _readcmap("colormaps/hot",prec->valc);
+    _readcmap("colormaps/coolwarm",prec->vald);
+    _readcmap("colormaps/bone",prec->vale);
 
     return 0;
 }
