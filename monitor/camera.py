@@ -1,7 +1,5 @@
-
 import epics
 import numpy as np
-import datetime
 
 class Camera(object):
 
@@ -13,14 +11,13 @@ class Camera(object):
     
     def get_data(self):
 
-        cdata = epics.caget(self.array_pvname)
-        image_data = None
-
         x_size = epics.caget(self.sizex_pvname)
         y_size = epics.caget(self.sizey_pvname)
 
-        data = np.array(cdata)
+        data = epics.caget(self.array_pvname)
+
         reshaped = data.reshape(y_size, x_size).astype('int32')
         image_data = np.transpose(reshaped)
 
         return image_data
+

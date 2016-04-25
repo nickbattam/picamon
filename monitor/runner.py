@@ -15,37 +15,40 @@ if __name__ == "__main__":
     camera = Camera()
 	
     old_cmap = ""
-    old_timestamp = -1
     while True:
         try:
 
             # check for quit events
-            if plotter.i_shall_continue()==False: break
+            if plotter.i_shall_continue() == False: break
 
-            # get camera name, set blank screen if none
+            # get camera name
             camera_name = controller.camera
+
+            # if no camera is selected, make screen blank
             if camera_name == "":
                 plotter.blank()
-                continue
- 
-            camera.set_name(camera_name)
 
-            # update colormap
-            cmap = controller.colourmap_name
-            if cmap != old_cmap:
-                old_cmap = cmap
-                plotter.set_colormap(controller.colourmap_data)
-                    
-            # update aspect ratio
-            plotter.set_aspect_ratio(controller.aspect)
+            # otherwise, display camera feed
+            else:
 
-            # update data
-            plotter.process(camera.get_data())
+                camera.set_name(camera_name)
 
-            # udpate label info
-            if controller.label==1:
-                plotter.show_label(camera_name)     
-                pass         
+                # update colormap
+                cmap = controller.colourmap_name
+                if cmap != old_cmap:
+                    old_cmap = cmap
+                    plotter.set_colormap(controller.colourmap_data)
+                        
+                # update aspect ratio
+                plotter.set_aspect_ratio(controller.aspect)
+
+                # get camera data and process it
+                plotter.process(camera.get_data())
+
+                # udpate label info
+                if controller.label==1:
+                    plotter.show_label(camera_name)     
+                    pass         
 
             # show and wait
             plotter.show()

@@ -1,4 +1,4 @@
-from epics import pv
+import epics
 
 class Controller(object):
     """ Class that reads PVs from the EPICS IOC controller
@@ -7,11 +7,11 @@ class Controller(object):
     def __init__(self, prefix, monitor):
         self.prefix = prefix
         self.monitor = monitor
-        self.camera_pv = pv.PV(prefix + ":" + monitor + ":CAMERA")
-        self.rate_pv = pv.PV(prefix + ":" + monitor + ":RATE")
-        self.colourmap_pv = pv.PV(prefix + ":" + monitor + ":COLORMAP")
-        self.aspect_pv = pv.PV(prefix + ":" + monitor + ":ASPECT")
-        self.label_pv = pv.PV(prefix + ":" + monitor + ":LABEL")
+        self.camera_pv = epics.PV(prefix + ":" + monitor + ":CAMERA")
+        self.rate_pv = epics.PV(prefix + ":" + monitor + ":RATE")
+        self.colourmap_pv = epics.PV(prefix + ":" + monitor + ":COLORMAP")
+        self.aspect_pv = epics.PV(prefix + ":" + monitor + ":ASPECT")
+        self.label_pv = epics.PV(prefix + ":" + monitor + ":LABEL")
 
     def close(self):
         self.camera_pv.disconnect()
@@ -39,9 +39,6 @@ class Controller(object):
     @property
     def colourmap_data(self): 
         cmap_name = self.colourmap_name
-        cmap_pv = pv.PV(self.prefix + ":CMAP:" + str(cmap_name).upper())
-        data = cmap_pv.get()
-        cmap_pv.disconnect()
+        data = epics.caget(self.prefix + ":CMAP:" + str(cmap_name).upper())
         return data
         
-

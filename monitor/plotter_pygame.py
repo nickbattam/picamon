@@ -2,7 +2,8 @@ from __future__ import division
 import pygame
 from pygame.locals import *
 from epics import pv
-
+import datetime
+import sys
 
 DEFAULT_COLORMAP = [Color(255-i,255-i,255-i) for i in range(256)]
 
@@ -89,28 +90,24 @@ class PyGamePlotter(object):
   
 
     def process(self, data):
-        try:
 
-            # make surface from data
-            surf = pygame.surfarray.make_surface(data)
+        # make surface from data
+        surf = pygame.surfarray.make_surface(data)
 
-            # set colourmap
-            surf.set_palette(self._palette)
+        # set colourmap
+        surf.set_palette(self._palette)
 
-            # calculate dimension an position depending on aspect ratio
-            size_pos = self._calc_size_pos(data.shape)
+        # calculate dimension an position depending on aspect ratio
+        size_pos = self._calc_size_pos(data.shape)
 
-            # rescale surface to appropriate dimension
-            surf = pygame.transform.scale(surf,(size_pos[2],size_pos[3]))
+        # rescale surface to appropriate dimension"
+        surf = pygame.transform.scale(surf,(size_pos[2],size_pos[3]))
 
-            # set background colour
-            self._set_background((0,0,0))
+        # set background colour
+        self._set_background((0,0,0))
 
-            # plot surface to screen
-            self._screen.blit(surf,(size_pos[0],size_pos[1]))
-
-        except:
-            pass
+        # plot surface to screen
+        self._screen.blit(surf,(size_pos[0],size_pos[1]))
 
 
     def show(self):
