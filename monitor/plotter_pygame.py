@@ -10,17 +10,20 @@ DEFAULT_COLORMAP = [Color(255-i,255-i,255-i) for i in range(256)]
 class PyGamePlotter(object):
 
 
-    def __init__(self, monitor):
+    def __init__(self, monitor, fullscreen):
         pygame.init()
         pygame.mouse.set_visible(False)
         pygame.display.set_caption(monitor)
 
         info = pygame.display.Info()
-        self._screen_size = (600,400)
-        #self._screen_size = (info.current_w,info.current_h)
 
-        self._screen = pygame.display.set_mode(self._screen_size)
-        #self._screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN|pygame.NOFRAME)
+        if fullscreen == 1:
+            self._screen_size = (info.current_w,info.current_h)
+            self._screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN|pygame.NOFRAME)
+        else:      
+            self._screen_size = (600,400)
+            self._screen = pygame.display.set_mode(self._screen_size)
+
 
         self._palette = DEFAULT_COLORMAP
         self._aspect = 0

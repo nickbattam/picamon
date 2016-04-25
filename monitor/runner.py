@@ -4,14 +4,21 @@ from camera import Camera
 from controller import Controller
 from plotter_pygame import PyGamePlotter
 import epics
+import argparse
 
 if __name__ == "__main__":
 
-    prefix = "MON-CONTROL"
-    monitor = sys.argv[1]
+    parser = argparse.ArgumentParser(description='')
+    parser.add_argument('--prefix', dest='prefix')
+    parser.add_argument('--name', dest='name')
+    parser.add_argument('--fullscreen', dest='fullscreen', default=1)
+    args = parser.parse_args() 
 
-    controller = Controller(prefix, monitor)
-    plotter = PyGamePlotter(monitor)
+    if not (args.prefix and args.name):
+        parser.error("Arguments missing. Please use both --prefix and --name")
+
+    controller = Controller(args.prefix, args.name)
+    plotter = PyGamePlotter(args.name, args.fullscreen)
     camera = Camera()
 	
     old_cmap = ""
