@@ -9,10 +9,10 @@ import argparse
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='')
-    parser.add_argument('--prefix', dest='prefix')
-    parser.add_argument('--name', dest='name')
-    parser.add_argument('--fullscreen', dest='fullscreen', default=1)
-    args = parser.parse_args() 
+    parser.add_argument('--prefix', dest='prefix', help='controller IOC prefix')
+    parser.add_argument('--name', dest='name' help='name of monitor')
+    parser.add_argument('--fullscreen', dest='fullscreen', default=1, help='1 for fullscreen (default), 0 for small window')
+    args = parser.parse_args()
 
     if not (args.prefix and args.name):
         parser.error("Arguments missing. Please use both --prefix and --name")
