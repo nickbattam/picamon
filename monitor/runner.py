@@ -11,8 +11,8 @@ if __name__ == "__main__":
     monitor = sys.argv[1]
 
     controller = Controller(prefix, monitor)
-
     plotter = PyGamePlotter(monitor)
+    camera = Camera()
 	
     old_cmap = ""
     old_timestamp = -1
@@ -24,10 +24,11 @@ if __name__ == "__main__":
 
             # get camera name, set blank screen if none
             camera_name = controller.camera
-            if not camera_name:
+            if camera_name == "":
                 plotter.blank()
                 continue
-            camera = Camera(camera_name)
+ 
+            camera.set_name(camera_name)
 
             # update colormap
             cmap = controller.colourmap_name
@@ -39,22 +40,20 @@ if __name__ == "__main__":
             plotter.set_aspect_ratio(controller.aspect)
 
             # update data
-            data, timestamp = camera.get_image_data()
-            if timestamp != old_timestamp:
-                plotter.process(data)
-                old_timestamp = timestamp
+            plotter.process(camera.get_data())
 
             # udpate label info
             if controller.label==1:
-                plotter.show_label(camera_name)
+                plotter.show_label(camera_name)     
+                pass         
 
             # show and wait
             plotter.show()
             sleep(controller.rate)
 
-        except KeyboardInterrupt:
-            if camera: camera.close()
+        except KeyboardInterrupt:            
             plotter.quit()
+            pass
 
     plotter.quit()
 
