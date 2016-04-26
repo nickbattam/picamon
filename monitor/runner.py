@@ -10,7 +10,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='')
     parser.add_argument('--prefix', dest='prefix', help='controller IOC prefix')
-    parser.add_argument('--name', dest='name' help='name of monitor')
+    parser.add_argument('--name', dest='name', help='name of monitor')
     parser.add_argument('--fullscreen', dest='fullscreen', default=1, help='1 for fullscreen (default), 0 for small window')
     args = parser.parse_args()
 
