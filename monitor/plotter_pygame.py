@@ -121,11 +121,10 @@ class PyGamePlotter(object):
         for event in pygame.event.get():
              if event.type == pygame.QUIT:
                  return False
-	     elif event.type == KEYDOWN and event.key==K_ESCAPE:
+             elif event.type == KEYDOWN and event.key==K_ESCAPE:
                  return False
              else:
                  return True
-
 
     def quit(self):
         pygame.quit()

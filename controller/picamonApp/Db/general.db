@@ -1,3 +1,31 @@
+
+record(aSub, "$(p):LIST:READ")
+{
+    field(SNAM, "readlist")
+    field(PINI, "YES")
+
+    field(OUTA, "$(p):LIST:CAMERA")
+    field(FTVA, "STRING")
+    field(NOVA, "256")
+
+    field(OUTB, "$(p):LIST:MONITOR")
+    field(FTVB, "STRING")
+    field(NOVB, "256")
+
+}
+
+record(waveform, "$(p):LIST:CAMERA")
+{
+    field(NELM, "256")
+    field(FTVL, "STRING")
+}
+
+record(waveform, "$(p):LIST:MONITOR")
+{
+    field(NELM, "256")
+    field(FTVL, "STRING")
+}
+
 record(aSub, "$(p):CMAP:READ")
 {
     field(SNAM, "readcmap")
