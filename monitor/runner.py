@@ -20,13 +20,13 @@ if __name__ == "__main__":
     controller = Controller(args.prefix, args.name)
     plotter = PyGamePlotter(args.name, args.fullscreen)
     camera = Camera()
-	
+
     old_cmap = ""
     while True:
         try:
-
             # check for quit events
-            if plotter.i_shall_continue() == False: break
+            if not plotter.i_shall_continue():
+                break
 
             # get camera name
             camera_name = controller.camera
@@ -37,7 +37,6 @@ if __name__ == "__main__":
 
             # otherwise, display camera feed
             else:
-
                 camera.set_name(camera_name)
 
                 # update colormap
@@ -53,7 +52,7 @@ if __name__ == "__main__":
                 plotter.process(camera.get_data())
 
                 # udpate label info
-                if controller.label==1:
+                if controller.label == 1:
                     plotter.show_label(camera_name)     
                     pass         
 

@@ -1,5 +1,6 @@
 import epics
 
+
 class Controller(object):
     """ Class that reads PVs from the EPICS IOC controller
     """

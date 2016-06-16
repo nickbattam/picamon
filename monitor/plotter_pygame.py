@@ -5,10 +5,10 @@ from epics import pv
 import datetime
 import sys
 
-DEFAULT_COLORMAP = [Color(255-i,255-i,255-i) for i in range(256)]
+DEFAULT_COLORMAP = [Color(255-i, 255-i, 255-i) for i in range(256)]
+
 
 class PyGamePlotter(object):
-
 
     def __init__(self, monitor, fullscreen):
         pygame.init()
@@ -23,7 +23,6 @@ class PyGamePlotter(object):
         else:      
             self._screen_size = (600,400)
             self._screen = pygame.display.set_mode(self._screen_size)
-
 
         self._palette = DEFAULT_COLORMAP
         self._aspect = 0
@@ -43,7 +42,7 @@ class PyGamePlotter(object):
         text = font.render(label, 1,(255,255,255))
         self._screen.blit(text,(0,0))      
 
-    def set_colormap(self,colormap):
+    def set_colormap(self, colormap):
         self._palette = [Color("0x" + colormap[i]) for i in range(256)]
 
     def set_name(self, name):
@@ -68,20 +67,20 @@ class PyGamePlotter(object):
 
             sw = self._screen_size[0]
             sh = self._screen_size[1]
-            sa =  sw / sh
+            sa = sw / sh
             
-            if  da < sa:
+            if da < sa:
                 scale_w = sh / dh
                 h = sh
-                w = int( dw * scale_w )
-                x = int( 0.5 * ( sw - w ) )
+                w = int(dw * scale_w)
+                x = int(0.5 * (sw - w))
                 y = 0           
             else:
                 scale_h = sw / dw
                 w = sw
-                h = int( dh * scale_h )
+                h = int(dh * scale_h)
                 x = 0
-                y = int( 0.5 * ( sh - h) )
+                y = int(0.5 * (sh - h))
 
         # stretching to fullscreen
         else:
@@ -89,8 +88,7 @@ class PyGamePlotter(object):
             w = self._screen_size[0]
             h = self._screen_size[1]
 
-        return (x,y,w,h)
-  
+        return (x, y, w, h)
 
     def process(self, data):
 
@@ -112,10 +110,8 @@ class PyGamePlotter(object):
         # plot surface to screen
         self._screen.blit(surf,(size_pos[0],size_pos[1]))
 
-
     def show(self):
         pygame.display.flip()
-
 
     def i_shall_continue(self):
         for event in pygame.event.get():
@@ -123,8 +119,8 @@ class PyGamePlotter(object):
                  return False
              elif event.type == KEYDOWN and event.key==K_ESCAPE:
                  return False
-             else:
-                 return True
+            else:
+                return True
 
     def quit(self):
         pygame.quit()

@@ -1,10 +1,10 @@
 import epics
 import numpy as np
 
+
 class Camera(object):
 
-    def set_name(self,prefix):
-
+    def set_name(self, prefix):
         self.array_pvname = prefix + ":image1:ArrayData"
         self.sizex_pvname = prefix + ":cam1:SizeX"
         self.sizey_pvname = prefix + ":cam1:SizeY"
