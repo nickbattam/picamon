@@ -26,22 +26,21 @@ if __name__ == "__main__":
                 break
 
             # get camera name
-            camera_name = controller.camera
+            camera.update_name(controller.camera)
 
             # if no camera is selected, make screen blank
-            if camera_name == "":
+            if not camera.has_feed():
                 plotter.blank()
 
             # otherwise, display camera feed
             else:
-                camera.set_name(camera_name)
 
                 # update colormap
                 cmap = controller.colourmap_name
                 if cmap != old_cmap:
                     old_cmap = cmap
                     plotter.set_colormap(controller.colourmap_data)
-                        
+
                 # update aspect ratio
                 plotter.set_aspect_ratio(controller.aspect)
 
@@ -50,7 +49,7 @@ if __name__ == "__main__":
 
                 # udpate label info
                 if controller.label == 1:
-                    plotter.show_label(camera_name)     
+                    plotter.show_label(camera.name)
                     pass         
 
             # show and wait

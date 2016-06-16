@@ -4,11 +4,27 @@ import numpy as np
 
 class Camera(object):
 
-    def set_name(self, prefix):
-        self.array_pvname = prefix + ":image1:ArrayData"
-        self.sizex_pvname = prefix + ":cam1:SizeX"
-        self.sizey_pvname = prefix + ":cam1:SizeY"
-    
+    DATA_RECORD = ":image1:ArrayData"
+    XSIZE_RECORD = ":cam1:SizeX"
+    YSIZE_RECORD = ":cam1:SizeY"
+
+    def __init__(self):
+        self._prefix = ""
+
+    def update_name(self, prefix):
+        if prefix != self._prefix:
+            self._prefix = prefix
+            self.array_pvname = prefix + Camera.DATA_RECORD
+            self.sizex_pvname = prefix + Camera.XSIZE_RECORD
+            self.sizey_pvname = prefix + Camera.YSIZE_RECORD
+
+    def has_feed(self):
+        return bool(self._prefix)
+
+    @property
+    def name(self):
+        return self._prefix
+
     def get_data(self):
 
         x_size = epics.caget(self.sizex_pvname)
