@@ -113,14 +113,21 @@ class PyGamePlotter(object):
     def show(self):
         pygame.display.flip()
 
-    def i_shall_continue(self):
+    def close_requested(self):
+        """ Check the pygame event queue for exit commands:
+                - quit
+                - Escape key-press
+
+            :return:
+                True if exit instruction detected
+        """
         for event in pygame.event.get():
-             if event.type == pygame.QUIT:
-                 return False
-             elif event.type == KEYDOWN and event.key==K_ESCAPE:
-                 return False
-            else:
+            if event.type == pygame.QUIT:
                 return True
+            elif event.type == KEYDOWN and event.key == K_ESCAPE:
+                return True
+
+        return False
 
     def quit(self):
         pygame.quit()

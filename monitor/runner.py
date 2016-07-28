@@ -22,7 +22,7 @@ if __name__ == "__main__":
     while True:
         try:
             # check for quit events
-            if not plotter.i_shall_continue():
+            if plotter.close_requested():
                 break
 
             # get camera name
