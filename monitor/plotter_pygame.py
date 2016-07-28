@@ -17,7 +17,7 @@ class PyGamePlotter(object):
 
         info = pygame.display.Info()
 
-        if fullscreen == 1:
+        if fullscreen:
             self._screen_size = (info.current_w,info.current_h)
             self._screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN|pygame.NOFRAME)
         else:      
@@ -26,6 +26,7 @@ class PyGamePlotter(object):
 
         self._palette = DEFAULT_COLORMAP
         self._aspect = 0
+        self.name = "unset"
 
     def blank(self):
         self._screen.fill((0,0,0))
@@ -88,7 +89,7 @@ class PyGamePlotter(object):
             w = self._screen_size[0]
             h = self._screen_size[1]
 
-        return (x, y, w, h)
+        return x, y, w, h
 
     def process(self, data):
 
