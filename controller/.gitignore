@@ -1,5 +1,10 @@
+lib/
 bin/
 O.*/
 db/
 dbd/
 iocBoot/iocpicamon/envPaths
+include/
+data/
+documentation/
+*~
