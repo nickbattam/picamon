@@ -10,6 +10,7 @@ bin/
 O.*/
 db/
 dbd/
+**/envPaths
 
 # Distribution / packaging
 .Python
