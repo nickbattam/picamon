@@ -13,52 +13,50 @@ class Monitor(object):
         self.plotter = plotter
         self.camera = Camera()
         self.controller = controller
+        self.colourmap = ""
+
+    def update_colourmap(self, old_colourmap):
+        colourmap = self.controller.colourmap_name
+        if colourmap is not None and colourmap != old_colourmap:
+            data = self.controller.colourmap_data
+            if data is not None:
+                self.plotter.set_colormap(data)
+                self.colourmap = colourmap
 
     def start(self):
-
-        old_cmap = ""
         while True:
             try:
                 # check for quit events
-                if plotter.close_requested():
+                if self.plotter.close_requested():
                     break
 
                 # get camera name
-                camera.update_name(controller.camera)
+                self.camera.update_name(self.controller.camera)
 
                 # if no camera is selected, make screen blank
-                if not camera.has_feed():
-                    plotter.blank()
+                if not self.camera.has_feed():
+                    self.plotter.blank()
 
                 # otherwise, display camera feed
                 else:
-
                     # update colormap
-                    cmap = controller.colourmap_name
-                    if cmap is not None and cmap != old_cmap:
-                        data = controller.colourmap_data
-                        if data is not None:
-                            old_cmap = cmap
-                            plotter.set_colormap(data)
-
-                    # update aspect ratio
-                    plotter.set_aspect_ratio(controller.aspect)
+                    self.update_colourmap(self.colourmap) # update aspect ratio
+                    self.plotter.set_aspect_ratio(self.controller.aspect)
 
                     # get camera data and process it
-                    plotter.process(camera.get_data())
+                    self.plotter.process(self.camera.get_data())
 
                     # udpate label info
-                    if controller.label == 1:
-                        plotter.show_label(camera.name)
+                    if self.controller.label == 1:
+                        self.plotter.show_label(self.camera.name)
                         pass
 
                 # show and wait
-                plotter.show()
-                sleep(controller.rate)
+                self.plotter.show()
+                sleep(self.controller.rate)
 
             except KeyboardInterrupt:
-                plotter.quit()
-                pass
+                self.plotter.quit()
 
 
 if __name__ == "__main__":
