@@ -1,5 +1,7 @@
 import epics
 
+CA_TIMEOUT = 5  # sec
+
 
 class Controller(object):
     """ Class that reads PVs from the EPICS IOC controller
@@ -38,8 +40,10 @@ class Controller(object):
         return self.colourmap_pv.get()
 
     @property
-    def colourmap_data(self): 
-        cmap_name = self.colourmap_name
-        data = epics.caget(self.prefix + ":CMAP:" + str(cmap_name).upper())
-        return data
-        
+    def colourmap_data(self):
+        """ Get the colour map, this is an array
+
+        :return: PV value or NONE if request timesout
+        """
+        pv_name = self.prefix + ":CMAP:" + str(self.colourmap_name).upper()
+        return epics.caget(pv_name, timeout=CA_TIMEOUT)
