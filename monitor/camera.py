@@ -12,7 +12,7 @@ class Camera(object):
         self._prefix = ""
 
     def update_name(self, prefix):
-        if prefix != self._prefix:
+        if prefix is not None and prefix != self._prefix:
             self._prefix = prefix
             self.array_pvname = prefix + Camera.DATA_RECORD
             self.sizex_pvname = prefix + Camera.XSIZE_RECORD
