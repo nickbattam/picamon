@@ -30,12 +30,20 @@ A Raspberry Pi based camera monitoring system. The idea is to be able to display
 | CAMERA M                    +---------->+         +---->+ MONITOR N          +<--+
 +-----------------------------+           +---------+     +--------------------+   |
                                                                                    |
-             +-----------+            +---------------------------------------+    |
-             |           |            | CONTROLLER                            |    |
-             |    GUI    +<---------->+  IOC: CONTROLLER                      +----+
-             |           |            |  PVs: <monID> = <cameraIOC>           |
-             +-----------+            |       <monID>:RATE = refresh rate(Hz) |
-                                      |       <monID>:COLMAP = colourmap name |
-                                      |       COLORMAPS = list of all colmaps |
-                                      +---------------------------------------+
+             +--------------+         +---------------------------------------+    |
+             |              |   CA    | CONTROLLER                            |    |
+             |   CSStudio   +<------->+  IOC: CONTROLLER                      |    |
+             |              |         |  PVs: <monID> = <cameraIOC>           |    |
+             +--------------+         |       <monID>:RATE = refresh rate(Hz) |    |
++---------+                           |       <monID>:COLMAP = colourmap name +----+
+|WebClient|  *  +-----------+         |       COLORMAPS = list of all colmaps |
+|         +<--->+ WebServer |   CA    |                                       |
++---------+     |           +<------->+                                       |
+                | PV -> JS  |         +---------------------------------------+
++---------+  *  | Json data |
+| Android +<--->+ Node stack|
+|   App   |     +-----------+
++---------+
+
+*: HTTP or WebSocket TBD
 ```
