@@ -26,14 +26,22 @@ class Camera(object):
         return self._prefix
 
     def get_data(self):
+        """ Get image data from EPICS as an int32 numpy array oriented
+            correctly for PyGame to plot it
 
+            If PV access fails for any of the PVs (xsize, ysize or data)
+            or either dimension is zero None is returned.
+
+        :return: None or requested data
+        """
+        image_data = None
         x_size = epics.caget(self.sizex_pvname)
         y_size = epics.caget(self.sizey_pvname)
-
         data = epics.caget(self.array_pvname)
 
-        reshaped = data.reshape(y_size, x_size).astype('int32')
-        image_data = np.transpose(reshaped)
+        if x_size and y_size and data is not None:
+            reshaped = data.reshape(y_size, x_size).astype('int32')
+            image_data = np.transpose(reshaped)
 
         return image_data
 
