@@ -100,6 +100,8 @@ class PyGamePlotter(object):
         return x, y, w, h
 
     def process(self, data):
+        """ Data may be None if PV access fails
+        """
 
         # make surface from data
         surf = pygame.surfarray.make_surface(data)
