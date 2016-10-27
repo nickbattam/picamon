@@ -1,9 +1,7 @@
-import sys
 from time import sleep
 from camera import Camera
 from controller import Controller
 from plotter_pygame import PyGamePlotter
-import epics
 import argparse
 
 
