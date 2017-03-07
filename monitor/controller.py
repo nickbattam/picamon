@@ -16,6 +16,11 @@ class Controller(object):
         self.aspect_pv = epics.PV(prefix + ":" + monitor + ":ASPECT")
         self.label_pv = epics.PV(prefix + ":" + monitor + ":LABEL")
 
+        # check the connection here; this is the simplest way to verify that
+        # the named IOC exists
+        if not self.rate_pv.wait_for_connection(1.0):
+            raise ValueError("Failed to connect to {0}:{1}".format(prefix, monitor))
+
     def close(self):
         self.camera_pv.disconnect()
         self.rate_pv.disconnect()
