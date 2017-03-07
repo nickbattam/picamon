@@ -8,18 +8,31 @@ class Controller(object):
     """
 
     def __init__(self, prefix, monitor):
-        self.prefix = prefix
-        self.monitor = monitor
-        self.camera_pv = epics.PV(prefix + ":" + monitor + ":CAMERA")
-        self.rate_pv = epics.PV(prefix + ":" + monitor + ":RATE")
-        self.colourmap_pv = epics.PV(prefix + ":" + monitor + ":COLORMAP")
-        self.aspect_pv = epics.PV(prefix + ":" + monitor + ":ASPECT")
-        self.label_pv = epics.PV(prefix + ":" + monitor + ":LABEL")
+        """ Create an instance of the controller for a single
+            monitor.
+
+            The monitor must be configured in the Controller database
+
+            prefix: Controller IOC name
+            monitor: name of the camera instance
+        """
+        self._prefix = prefix
+
+        self.monitor_list_pv = epics.PV("{0}:LIST:CAMERA".format(prefix))
+
+        self.camera_pv = epics.PV("{0}:{1}:CAMERA".format(prefix, monitor))
+        self.rate_pv = epics.PV("{0}:{1}:RATE".format(prefix, monitor))
+        self.colourmap_pv = epics.PV("{0}:{1}:COLORMAP".format(prefix, monitor))
+        self.aspect_pv = epics.PV("{0}:{1}:ASPECT".format(prefix, monitor))
+        self.label_pv = epics.PV("{0}:{1}:LABEL".format(prefix, monitor))
 
         # check the connection here; this is the simplest way to verify that
         # the named IOC exists
-        if not self.rate_pv.wait_for_connection(1.0):
-            raise ValueError("Failed to connect to {0}:{1}".format(prefix, monitor))
+        if not self.monitor_list_pv.wait_for_connection(1.0):
+            raise ValueError("Failed to connect to controller IOC: {0}".format(prefix))
+
+        for mon in self.monitor_list_pv.get():
+            print "Found", mon
 
     def close(self):
         self.camera_pv.disconnect()
@@ -29,16 +42,20 @@ class Controller(object):
         self.label_pv.disconnect()
 
     @property
-    def camera(self): return self.camera_pv.get()
+    def camera(self):
+        return self.camera_pv.get()
 
     @property
-    def rate(self): return self.rate_pv.get()
+    def rate(self):
+        return self.rate_pv.get()
 
     @property
-    def aspect(self): return self.aspect_pv.get()
+    def aspect(self):
+        return self.aspect_pv.get()
 
     @property
-    def label(self): return self.label_pv.get()
+    def label(self):
+        return self.label_pv.get()
 
     @property
     def colourmap_name(self):
@@ -50,5 +67,5 @@ class Controller(object):
 
         :return: PV value or NONE if request timesout
         """
-        pv_name = self.prefix + ":CMAP:" + str(self.colourmap_name).upper()
+        pv_name = self._prefix + ":CMAP:" + str(self.colourmap_name).upper()
         return epics.caget(pv_name, timeout=CA_TIMEOUT)
