@@ -101,25 +101,27 @@ class PyGamePlotter(object):
 
     def process(self, data):
         """ Data may be None if PV access fails
+        :param data:
+        :return:
         """
+        if data is not None:
+            # make surface from data
+            surf = pygame.surfarray.make_surface(data)
 
-        # make surface from data
-        surf = pygame.surfarray.make_surface(data)
+            # set colourmap
+            surf.set_palette(self._palette)
 
-        # set colourmap
-        surf.set_palette(self._palette)
+            # calculate dimension an position depending on aspect ratio
+            (x, y, width, height) = self._calc_size_pos(data.shape)
 
-        # calculate dimension an position depending on aspect ratio
-        (x, y, width, height) = self._calc_size_pos(data.shape)
+            # rescale surface to appropriate dimension"
+            surf = pygame.transform.scale(surf, (width, height))
 
-        # rescale surface to appropriate dimension"
-        surf = pygame.transform.scale(surf, (width, height))
+            # set background colour
+            self._set_background(COLOUR_WHITE)
 
-        # set background colour
-        self._set_background(COLOUR_WHITE)
-
-        # plot surface to screen
-        self._screen.blit(surf, (x, y))
+            # plot surface to screen
+            self._screen.blit(surf, (x, y))
 
     def show(self):
         pygame.display.flip()

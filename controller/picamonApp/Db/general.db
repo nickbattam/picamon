@@ -1,4 +1,5 @@
-
+# populate the :CAMERA and :MONITOR waveforms
+# from data in cameras.list and monitors.list
 record(aSub, "$(p):LIST:READ")
 {
     field(SNAM, "readlist")
@@ -26,6 +27,7 @@ record(waveform, "$(p):LIST:MONITOR")
     field(FTVL, "STRING")
 }
 
+# read colourmaps from configuration file
 record(aSub, "$(p):CMAP:READ")
 {
     field(SNAM, "readcmap")

@@ -31,8 +31,11 @@ class Controller(object):
         if not self.monitor_list_pv.wait_for_connection(1.0):
             raise ValueError("Failed to connect to controller IOC: {0}".format(prefix))
 
-        for mon in self.monitor_list_pv.get():
-            print "Found", mon
+        monitors = self.monitor_list_pv.get()
+        if monitors is None:
+            raise ValueError("No data returned from IOC: {0}".format(prefix))
+        elif monitor not in monitors:
+            raise ValueError("Specified monitor ({0}) is not defined in controller IOC ({0})".format(monitor, prefix))
 
     def close(self):
         self.camera_pv.disconnect()
@@ -43,7 +46,11 @@ class Controller(object):
 
     @property
     def camera(self):
-        return self.camera_pv.get()
+        camera_name = self.camera_pv.get()
+        if camera_name not in self.camera_name_lists:
+            raise ValueError()
+
+        return camera_name
 
     @property
     def rate(self):
