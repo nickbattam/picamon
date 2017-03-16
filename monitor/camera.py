@@ -4,19 +4,20 @@ import numpy as np
 
 class Camera(object):
 
-    DATA_RECORD = ":image1:ArrayData"
-    XSIZE_RECORD = ":cam1:SizeX"
-    YSIZE_RECORD = ":cam1:SizeY"
+    DATA_RECORD = "image1:ArrayData"
+    XSIZE_RECORD = "cam1:SizeX"
+    YSIZE_RECORD = "cam1:SizeY"
 
     def __init__(self):
         self._prefix = ""
 
     def update_name(self, prefix):
         if prefix is not None and prefix != self._prefix:
+            # TODO: check the camera exists in <controller>:LIST:CAMERAS
             self._prefix = prefix
-            self.array_pvname = prefix + Camera.DATA_RECORD
-            self.sizex_pvname = prefix + Camera.XSIZE_RECORD
-            self.sizey_pvname = prefix + Camera.YSIZE_RECORD
+            self.array_pvname = "{0}:{1}".format(prefix, Camera.DATA_RECORD)
+            self.sizex_pvname = "{0}:{1}".format(prefix, Camera.XSIZE_RECORD)
+            self.sizey_pvname = "{0}:{1}".format(prefix, Camera.YSIZE_RECORD)
 
     def has_feed(self):
         return bool(self._prefix)

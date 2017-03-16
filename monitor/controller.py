@@ -18,7 +18,7 @@ class Controller(object):
         """
         self._prefix = prefix
 
-        self.monitor_list_pv = epics.PV("{0}:LIST:CAMERA".format(prefix))
+        self.monitor_list_pv = epics.PV("{0}:LIST:MONITOR".format(prefix))
 
         self.camera_pv = epics.PV("{0}:{1}:CAMERA".format(prefix, monitor))
         self.rate_pv = epics.PV("{0}:{1}:RATE".format(prefix, monitor))
