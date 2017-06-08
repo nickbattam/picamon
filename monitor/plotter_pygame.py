@@ -135,12 +135,21 @@ class PyGamePlotter(object):
                 True if exit instruction detected
         """
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return True
-            elif event.type == KEYDOWN and event.key == K_ESCAPE:
+            if self.is_exit_event(event):
                 return True
 
         return False
+
+    @staticmethod
+    def is_exit_event(event):
+        """ Identify 'exit' events:
+                - KEYDOWN + ESCAPE key
+                - QUIT
+            Returns:
+                True if exit event
+        """
+        return ((event.type == KEYDOWN and event.key == K_ESCAPE)
+                or event.type == pygame.QUIT)
 
     def quit(self):
         pygame.quit()
