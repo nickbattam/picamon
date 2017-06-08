@@ -44,7 +44,7 @@ class Monitor(object):
                     # get camera data and process it
                     self.plotter.process(self.camera.get_data())
 
-                    # udpate label info
+                    # update label info
                     if self.controller.label == 1:
                         self.plotter.show_label(self.camera.name)
                         pass
