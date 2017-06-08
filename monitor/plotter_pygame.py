@@ -5,6 +5,10 @@ from epics import pv
 import datetime
 import sys
 
+COLOUR_BLACK = (0, 0, 0)
+
+COLOUR_WHITE = (255, 255, 255)
+
 DEFAULT_COLORMAP = [Color(255-i, 255-i, 255-i) for i in range(256)]
 
 
@@ -17,20 +21,21 @@ class PyGamePlotter(object):
 
         info = pygame.display.Info()
 
-        if fullscreen == 1:
-            self._screen_size = (info.current_w,info.current_h)
-            self._screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN|pygame.NOFRAME)
+        if fullscreen:
+            self._screen_size = (info.current_w, info.current_h)
+            self._screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN | pygame.NOFRAME)
         else:      
-            self._screen_size = (600,400)
+            self._screen_size = (600, 400)
             self._screen = pygame.display.set_mode(self._screen_size)
 
         self._palette = DEFAULT_COLORMAP
         self._aspect = 0
+        self.name = "unset"
 
     def blank(self):
-        self._screen.fill((0,0,0))
+        self._screen.fill(COLOUR_BLACK)
         font = pygame.font.Font(None, 50)
-        text = font.render("No Camera Selected",1,(255,255,255))
+        text = font.render("No Camera Selected", 1, COLOUR_WHITE)
         textpos = text.get_rect()
         textpos.centerx = self._screen.get_rect().centerx
         textpos.centery = self._screen.get_rect().centery
@@ -39,8 +44,8 @@ class PyGamePlotter(object):
 
     def show_label(self, label):
         font = pygame.font.Font(None, 50)
-        text = font.render(label, 1,(255,255,255))
-        self._screen.blit(text,(0,0))      
+        text = font.render(label, 1, COLOUR_WHITE)
+        self._screen.blit(text, (0, 0))
 
     def set_colormap(self, colormap):
         self._palette = [Color("0x" + colormap[i]) for i in range(256)]
@@ -51,13 +56,17 @@ class PyGamePlotter(object):
     def _set_background(self, colour):
         background = pygame.Surface(self._screen_size)
         background.fill(colour)
-        self._screen.blit(background,(0,0)) 
+        self._screen.blit(background, (0, 0))
 
     def set_aspect_ratio(self, aspect):
         self._aspect = aspect
           
     def _calc_size_pos(self, shape):
-            
+        """
+
+        :param shape:
+        :return: Return tuple (x, y, width, height)
+        """
         # keeping aspect ratio
         if self._aspect == 1:
 
@@ -88,39 +97,50 @@ class PyGamePlotter(object):
             w = self._screen_size[0]
             h = self._screen_size[1]
 
-        return (x, y, w, h)
+        return x, y, w, h
 
     def process(self, data):
+        """ Data may be None if PV access fails
+        :param data:
+        :return:
+        """
+        if data is not None:
+            # make surface from data
+            surf = pygame.surfarray.make_surface(data)
 
-        # make surface from data
-        surf = pygame.surfarray.make_surface(data)
+            # set colourmap
+            surf.set_palette(self._palette)
 
-        # set colourmap
-        surf.set_palette(self._palette)
+            # calculate dimension an position depending on aspect ratio
+            (x, y, width, height) = self._calc_size_pos(data.shape)
 
-        # calculate dimension an position depending on aspect ratio
-        size_pos = self._calc_size_pos(data.shape)
+            # rescale surface to appropriate dimension"
+            surf = pygame.transform.scale(surf, (width, height))
 
-        # rescale surface to appropriate dimension"
-        surf = pygame.transform.scale(surf,(size_pos[2],size_pos[3]))
+            # set background colour
+            self._set_background(COLOUR_WHITE)
 
-        # set background colour
-        self._set_background((0,0,0))
-
-        # plot surface to screen
-        self._screen.blit(surf,(size_pos[0],size_pos[1]))
+            # plot surface to screen
+            self._screen.blit(surf, (x, y))
 
     def show(self):
         pygame.display.flip()
 
-    def i_shall_continue(self):
+    def close_requested(self):
+        """ Check the pygame event queue for exit commands:
+                - quit
+                - Escape key-press
+
+            :return:
+                True if exit instruction detected
+        """
         for event in pygame.event.get():
-             if event.type == pygame.QUIT:
-                 return False
-             elif event.type == KEYDOWN and event.key==K_ESCAPE:
-                 return False
-            else:
+            if event.type == pygame.QUIT:
                 return True
+            elif event.type == KEYDOWN and event.key == K_ESCAPE:
+                return True
+
+        return False
 
     def quit(self):
         pygame.quit()

@@ -15,6 +15,7 @@ def read_list(parser, category, variable, delimiter):
     return data
 
 def generate_monitor_subfile(filename, monitors, prefix):
+    print "generating substitution file " + os.path.abspath(filename)
     monitor_subfile = open(filename, 'w')
     monitor_subfile.write("file \"${TOP}/db/monitor.db\" {\n")
     monitor_subfile.write("\tpattern { p, monitor }\n")
@@ -23,6 +24,7 @@ def generate_monitor_subfile(filename, monitors, prefix):
     monitor_subfile.close()
 
 def generate_general_subfile(filename, prefix):
+    print "generating substitution file " + os.path.abspath(filename)
     general_subfile = open(filename, 'w')
     general_subfile.write("file \"${TOP}/db/general.db\" {\n")
     general_subfile.write("\tpattern { p }\n")
@@ -31,7 +33,8 @@ def generate_general_subfile(filename, prefix):
     general_subfile.close()
 
 def generate_list_file(filename, elements):
-    list_file = open(os.path.join(boot,filename), 'w')
+    print "generating list file " + os.path.abspath(filename)
+    list_file = open(filename, 'w')
     for element in elements: list_file.write("%s\n" % element)
     list_file.close()
 
@@ -57,12 +60,14 @@ if __name__ == "__main__":
     cameras = read_list(cp, "cameras", "name", ',')
     monitors = read_list(cp, "monitors", "name", ',')
 
-    ## generate substitution files
+    # get boot directory
     boot = getIOCboot()
+
+    ## generate substitution files
     generate_monitor_subfile(os.path.join(boot,"monitor.substitutions"), monitors, prefix)
     generate_general_subfile(os.path.join(boot,"general.substitutions"), prefix)
 
     ## generate camera & monitor list files (to be read by aSub PV at startup)
-    generate_list_file("camera.list", cameras)
-    generate_list_file("monitor.list", monitors)
+    generate_list_file(os.path.join(boot,"camera.list"), cameras)
+    generate_list_file(os.path.join(boot,"monitor.list"), monitors)
 

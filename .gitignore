@@ -5,6 +5,13 @@ __pycache__/
 # C extensions
 *.so
 
+# EPICS
+bin/
+O.*/
+db/
+dbd/
+**/envPaths
+
 # Distribution / packaging
 .Python
 env/

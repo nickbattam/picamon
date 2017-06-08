@@ -48,7 +48,6 @@ static long _readlist(char filename[], void *destination)
 
 static long readlist(aSubRecord *prec)
 {
-
     long e = 0;
     
     e &= _readlist("camera.list", prec->vala);
@@ -108,7 +107,6 @@ static long _readcmap(char filename[],void *destination)
 
 static long readcmap(aSubRecord *prec)
 {
-
     long e = 0;
 
     e &= _readcmap("colormaps/gray", prec->vala);
