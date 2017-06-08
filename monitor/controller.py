@@ -47,8 +47,10 @@ class Controller(object):
     @property
     def camera(self):
         camera_name = self.camera_pv.get()
-        if camera_name not in self.camera_name_lists:
-            raise ValueError()
+        # if camera_name not in self.camera_name_lists:
+        #     TODO: handle camera names
+        #     print camera_name
+        #     raise ValueError()
 
         return camera_name
 
