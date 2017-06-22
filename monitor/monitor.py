@@ -1,59 +1,54 @@
-#!/usr/bin/python
-# monitor.py
 from time import sleep
-from epics.pv import PV
 from camera import Camera
 
 
 class Monitor(object):
-    """ monitor class to listen for broadcast instructions
-        from network with pv name and camera to stream from
-    """
 
-    def __init__(self, control_pv, plotter):
-        """
-            Arguments:
-                control_pv -- name of PV containing target camera data for this monitor (e.g. MON-CONTROL:PIx)
-                plotter -- image rendering tool
-        """
-        self.camera = None
+    def __init__(self, plotter, controller):
         self.plotter = plotter
-        self._stop = False
+        self.camera = Camera()
+        self.controller = controller
+        self.colourmap = ""
 
-        self.camera_name = PV(control_pv, callback=self.update_camera)
+    def update_colourmap(self, old_colourmap):
+        colourmap = self.controller.colourmap_name
+        if colourmap is not None and colourmap != old_colourmap:
+            data = self.controller.colourmap_data
+            if data is not None:
+                self.plotter.set_colormap(data)
+                self.colourmap = colourmap
 
-    def update_camera(self, value, **kw):
-        """ Update the camera object linked to the monitor
+    def start(self):
+        while True:
+            try:
+                # check for quit events
+                if self.plotter.close_requested():
+                    break
 
-            :param value: pv root for camera object
-            :param kw: unused kwargs argument, required by PyEpics.
-        """
-        if self.camera is not None:
-            self.camera.close()
-        self.camera = Camera(value)
-        self.plotter.set_image_size(self.camera.xsize, self.camera.ysize)
+                # get camera name
+                self.camera.update_name(self.controller.camera)
 
-    def run(self):
-        """ Refresh the image at 5Hz.
+                # if no camera is selected, make screen blank
+                if not self.camera.has_feed():
+                    self.plotter.blank()
 
-            Updates continue until stop() is signalled
-        """
-        while not self._stop:
-            self._update_image()
-            sleep(0.2)
-        else:
-            self._stop = False
+                # otherwise, display camera feed
+                else:
+                    # update colormap
+                    self.update_colourmap(self.colourmap) # update aspect ratio
+                    self.plotter.set_aspect_ratio(self.controller.aspect)
 
-    def stop(self):
-        """ Signal the monitor to stop refreshing
-        """
-        self._stop = True
+                    # get camera data and process it
+                    self.plotter.process(self.camera.get_data())
 
-    def _update_image(self):
-        """ Grap latest image and size data from the camera and pass to
-            the plotter
-        """
-        if self.camera is not None:
-            data, timestamp = self.camera.get_image_data()
-            self.plotter.show(data)
+                    # update label info
+                    if self.controller.label == 1:
+                        self.plotter.show_label(self.camera.name)
+                        pass
 
+                # show and wait
+                self.plotter.show()
+                sleep(self.controller.rate)
+
+            except KeyboardInterrupt:
+                self.plotter.quit()
