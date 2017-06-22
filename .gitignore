@@ -60,5 +60,10 @@ docs/_build/
 # PyBuilder
 target/
 
-# PyChart
+# PyCharm
 .idea/
+
+# IntelliJ
+/out/
+
+
