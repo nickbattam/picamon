@@ -13,6 +13,10 @@ record(aSub, "$(p):LIST:READ")
     field(FTVB, "STRING")
     field(NOVB, "256")
 
+    field(OUTC, "$(p):LIST:COLORMAP")
+    field(FTVC, "STRING")
+    field(NOVC, "256")
+
 }
 
 record(waveform, "$(p):LIST:CAMERA")
@@ -22,6 +26,12 @@ record(waveform, "$(p):LIST:CAMERA")
 }
 
 record(waveform, "$(p):LIST:MONITOR")
+{
+    field(NELM, "256")
+    field(FTVL, "STRING")
+}
+
+record(waveform, "$(p):LIST:COLORMAP")
 {
     field(NELM, "256")
     field(FTVL, "STRING")

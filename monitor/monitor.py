@@ -12,7 +12,7 @@ class Monitor(object):
 
     def update_colourmap(self, old_colourmap):
         colourmap = self.controller.colourmap_name
-        if colourmap is not None and colourmap != old_colourmap:
+        if colourmap is not None and colourmap != old_colourmap and colourmap is not "":
             data = self.controller.colourmap_data
             if data is not None:
                 self.plotter.set_colormap(data)
@@ -35,7 +35,9 @@ class Monitor(object):
                 # otherwise, display camera feed
                 else:
                     # update colormap
-                    self.update_colourmap(self.colourmap) # update aspect ratio
+                    self.update_colourmap(self.colourmap) 
+
+                    # update aspect ratio
                     self.plotter.set_aspect_ratio(self.controller.aspect)
 
                     # get camera data and process it

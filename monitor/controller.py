@@ -47,6 +47,13 @@ class Controller(object):
             raise ValueError("No cameras registered with controller: {0}".format(prefix))
 
 
+        # check there is list of "registered" colormaps to use
+        self.colormap_list_pv = epics.PV("{0}:LIST:COLORMAP".format(prefix))
+        colormaps = self.colormap_list_pv.get()
+        if colormaps is None:
+            raise ValueError("No colormaps registered with controller: {0}".format(prefix))
+
+
     def close(self):
         self.camera_pv.disconnect()
         self.rate_pv.disconnect()
@@ -75,7 +82,9 @@ class Controller(object):
 
     @property
     def colourmap_name(self):
-        return self.colourmap_pv.get()
+        colormap = self.colourmap_pv.get()
+        colormaps = self.colormap_list_pv.get()
+        return colormap if colormap in colormaps else None
 
     @property
     def colourmap_data(self):

@@ -52,6 +52,7 @@ static long readlist(aSubRecord *prec)
     
     e &= _readlist("camera.list", prec->vala);
     e &= _readlist("monitor.list", prec->valb);
+    e &= _readlist("colormap.list", prec->valc);
 
     return e;
 }
