@@ -7,6 +7,7 @@ class Camera(object):
     DATA_RECORD = "image1:ArrayData"
     XSIZE_RECORD = "cam1:SizeX"
     YSIZE_RECORD = "cam1:SizeY"
+    CAMERA_LIST_RECORD = ""
 
     def __init__(self):
         self._prefix = ""
@@ -14,6 +15,7 @@ class Camera(object):
     def update_name(self, prefix):
         if prefix is not None and prefix != self._prefix:
             # TODO: check the camera exists in <controller>:LIST:CAMERAS
+
             self._prefix = prefix
             self.array_pvname = "{0}:{1}".format(prefix, Camera.DATA_RECORD)
             self.sizex_pvname = "{0}:{1}".format(prefix, Camera.XSIZE_RECORD)

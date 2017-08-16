@@ -18,8 +18,6 @@ class Controller(object):
         """
         self._prefix = prefix
 
-        self.monitor_list_pv = epics.PV("{0}:LIST:MONITOR".format(prefix))
-
         self.camera_pv = epics.PV("{0}:{1}:CAMERA".format(prefix, monitor))
         self.rate_pv = epics.PV("{0}:{1}:RATE".format(prefix, monitor))
         self.colourmap_pv = epics.PV("{0}:{1}:COLORMAP".format(prefix, monitor))
@@ -28,14 +26,26 @@ class Controller(object):
 
         # check the connection here; this is the simplest way to verify that
         # the named IOC exists
-        if not self.monitor_list_pv.wait_for_connection(1.0):
+        if not self.camera_pv.wait_for_connection(1.0):
             raise ValueError("Failed to connect to controller IOC: {0}".format(prefix))
 
+        # check there is list of "registered" monitors to use
+        self.monitor_list_pv = epics.PV("{0}:LIST:MONITOR".format(prefix))
         monitors = self.monitor_list_pv.get()
         if monitors is None:
-            raise ValueError("No data returned from IOC: {0}".format(prefix))
-        elif monitor not in monitors:
+            raise ValueError("No monitors registered with controller: {0}".format(prefix))
+        
+        # check that the specified monitor exists!
+        if monitor not in monitors:
             raise ValueError("Specified monitor ({0}) is not defined in controller IOC ({0})".format(monitor, prefix))
+
+
+        # check there is list of "registered" cameras to use
+        self.camera_list_pv = epics.PV("{0}:LIST:CAMERA".format(prefix))
+        cameras = self.camera_list_pv.get()
+        if cameras is None:
+            raise ValueError("No cameras registered with controller: {0}".format(prefix))
+
 
     def close(self):
         self.camera_pv.disconnect()
@@ -46,13 +56,10 @@ class Controller(object):
 
     @property
     def camera(self):
-        camera_name = self.camera_pv.get()
-        # if camera_name not in self.camera_name_lists:
-        #     TODO: handle camera names
-        #     print camera_name
-        #     raise ValueError()
+        camera = self.camera_pv.get()
+        cameras = self.camera_list_pv.get()
+        return camera if camera in cameras else ""
 
-        return camera_name
 
     @property
     def rate(self):
@@ -78,3 +85,4 @@ class Controller(object):
         """
         pv_name = self._prefix + ":CMAP:" + str(self.colourmap_name).upper()
         return epics.caget(pv_name, timeout=CA_TIMEOUT)
+

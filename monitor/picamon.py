@@ -8,7 +8,7 @@ import argparse
 parser = argparse.ArgumentParser(description='')
 parser.add_argument('--prefix', required=True, dest='prefix', help='controller IOC prefix')
 parser.add_argument('--name', required=True, dest='name', help='name of monitor')
-parser.add_argument('--fullscreen', dest='fullscreen', type=bool, default=True, help='True for fullscreen (default), False for small window')
+parser.add_argument('--fullscreen', dest='fullscreen', type=bool, default=False, help='True for fullscreen (default), False for small window')
 args = parser.parse_args()
 
 controller = Controller(args.prefix, args.name)

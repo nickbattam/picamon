@@ -6,9 +6,7 @@ import datetime
 import sys
 
 COLOUR_BLACK = (0, 0, 0)
-
 COLOUR_WHITE = (255, 255, 255)
-
 DEFAULT_COLORMAP = [Color(255-i, 255-i, 255-i) for i in range(256)]
 
 
@@ -118,7 +116,7 @@ class PyGamePlotter(object):
             surf = pygame.transform.scale(surf, (width, height))
 
             # set background colour
-            self._set_background(COLOUR_WHITE)
+            self._set_background(COLOUR_BLACK)
 
             # plot surface to screen
             self._screen.blit(surf, (x, y))
