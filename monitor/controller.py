@@ -23,6 +23,7 @@ class Controller(object):
         self.colourmap_pv = epics.PV("{0}:{1}:COLORMAP".format(prefix, monitor))
         self.aspect_pv = epics.PV("{0}:{1}:ASPECT".format(prefix, monitor))
         self.label_pv = epics.PV("{0}:{1}:LABEL".format(prefix, monitor))
+        self.normalisation_pv = epics.PV("{0}:{1}:NORMALISATION".format(prefix, monitor))
 
         # check the connection here; this is the simplest way to verify that
         # the named IOC exists
@@ -60,6 +61,7 @@ class Controller(object):
         self.colourmap_pv.disconnect()
         self.aspect_pv.disconnect()
         self.label_pv.disconnect()
+        self.normalisation_pv.disconnect()
 
     @property
     def camera(self):
@@ -79,6 +81,12 @@ class Controller(object):
     @property
     def label(self):
         return self.label_pv.get()
+
+
+    @property
+    def normalisation(self):
+        return self.normalisation_pv.get()
+
 
     @property
     def colourmap_name(self):

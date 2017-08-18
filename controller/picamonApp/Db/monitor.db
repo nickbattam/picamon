@@ -16,7 +16,7 @@ record(ai, "$(p):$(monitor):RATE")
 record(stringin, "$(p):$(monitor):COLORMAP")
 {
     field(DESC, "colourmap name")
-    field(VAL, "jet")
+    field(VAL, "JET")
 	field(PINI, "YES")
 }
 
@@ -27,6 +27,15 @@ record(bi, "$(p):$(monitor):ASPECT")
     field(PINI, "YES")
     field(ZNAM, "stretched to full screen")
     field(ONAM, "Keeping the aspect ratio")
+}
+
+record(bi, "$(p):$(monitor):NORMALISATION")
+{
+    field(DESC, "auto-normalise the data or not")
+    field(VAL, "1")
+    field(PINI, "YES")
+    field(ZNAM, "not normalised")
+    field(ONAM, "auto-normalised")
 }
 
 record(bi, "$(p):$(monitor):LABEL")

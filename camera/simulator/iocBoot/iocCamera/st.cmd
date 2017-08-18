@@ -144,8 +144,8 @@ dbpf X2-CAM:SIMULATION 1
 dbpf X2-CAM:cam1:SimMode 1
 dbpf X2-CAM:cam1:PeakVariation 8
 dbpf X2-CAM:cam1:Noise 50
-dbpf X2-CAM:cam1:GainX 19
-dbpf X2-CAM:cam1:GainY 8
+dbpf X2-CAM:cam1:GainX 10
+dbpf X2-CAM:cam1:GainY 5
 dbpf X2-CAM:cam1:Gain 1
 dbpf X2-CAM:cam1:PeakNumX 1
 dbpf X2-CAM:cam1:PeakNumY 1

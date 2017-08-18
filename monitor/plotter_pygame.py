@@ -28,6 +28,7 @@ class PyGamePlotter(object):
 
         self._palette = DEFAULT_COLORMAP
         self._aspect = 0
+        self._normalisation = 1
         self.name = "unset"
 
     def blank(self):
@@ -59,6 +60,9 @@ class PyGamePlotter(object):
     def set_aspect_ratio(self, aspect):
         self._aspect = aspect
           
+    def set_normalisation(self, normalisation):
+        self._normalisation = normalisation
+
     def _calc_size_pos(self, shape):
         """
 
@@ -103,6 +107,12 @@ class PyGamePlotter(object):
         :return:
         """
         if data is not None:
+
+            # normalise data
+            if self._normalisation == 1:
+                maximum = data.max()
+                if maximum>0: data = data * 255.0 / maximum
+
             # make surface from data
             surf = pygame.surfarray.make_surface(data)
 

@@ -40,6 +40,9 @@ class Monitor(object):
                     # update aspect ratio
                     self.plotter.set_aspect_ratio(self.controller.aspect)
 
+                    # update normalisation
+                    self.plotter.set_normalisation(self.controller.normalisation)
+
                     # get camera data and process it
                     self.plotter.process(self.camera.get_data())
 
