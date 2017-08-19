@@ -23,8 +23,14 @@ class PyGamePlotter(object):
             self._screen_size = (info.current_w, info.current_h)
             self._screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN | pygame.NOFRAME)
         else:      
-            self._screen_size = (600, 400)
+            self._screen_size = (1200, 800)
             self._screen = pygame.display.set_mode(self._screen_size)
+
+        
+        # define font size as a function of screen size
+        # font 50 looks good with 600 pixel wide... linear extrapolation from there
+        self.font_size = int(self._screen_size[0] * 50.0 / 600.0)
+
 
         self._palette = DEFAULT_COLORMAP
         self._aspect = 0
@@ -33,7 +39,7 @@ class PyGamePlotter(object):
 
     def blank(self):
         self._screen.fill(COLOUR_BLACK)
-        font = pygame.font.Font(None, 50)
+        font = pygame.font.Font(None, self.font_size)
         text = font.render("No Camera Selected", 1, COLOUR_WHITE)
         textpos = text.get_rect()
         textpos.centerx = self._screen.get_rect().centerx
@@ -42,7 +48,7 @@ class PyGamePlotter(object):
         pygame.display.flip()
 
     def show_label(self, label):
-        font = pygame.font.Font(None, 50)
+        font = pygame.font.Font(None, self.font_size)
         text = font.render(label, 1, COLOUR_WHITE)
         self._screen.blit(text, (0, 0))
 
