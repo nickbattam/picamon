@@ -16,14 +16,14 @@ class PyGamePlotter(object):
         pygame.init()
         pygame.mouse.set_visible(False)
         pygame.display.set_caption(monitor)
-
         info = pygame.display.Info()
 
+        # set screen size and mode (fullscreen, window border)
         if fullscreen:
             self._screen_size = (info.current_w, info.current_h)
             self._screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN | pygame.NOFRAME)
         else:      
-            self._screen_size = (1200, 800)
+            self._screen_size = (600, 400)
             self._screen = pygame.display.set_mode(self._screen_size)
 
         
