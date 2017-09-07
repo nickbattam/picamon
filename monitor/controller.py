@@ -16,14 +16,13 @@ class Controller(object):
         self.normalisation_pv = epics.PV("{0}:{1}:NORMALISATION".format(prefix, monitor))
 
         self.monitor_list_pv = epics.PV("{0}:LIST:MONITOR".format(prefix))
-        monitors = self.monitor_list_pv.get()
+        _ = self.monitor_list_pv.get()
 
         self.camera_list_pv = epics.PV("{0}:LIST:CAMERA".format(prefix))
-        cameras = self.camera_list_pv.get()
+        _ = self.camera_list_pv.get()
 
         self.colormap_list_pv = epics.PV("{0}:LIST:COLORMAP".format(prefix))
-        colormaps = self.colormap_list_pv.get()
-
+        _ = self.colormap_list_pv.get()
 
     def close(self):
         self.camera_pv.disconnect()
@@ -37,9 +36,10 @@ class Controller(object):
     def camera(self):
         camera = self.camera_pv.get()
         cameras = self.camera_list_pv.get()
-        if cameras is None: return ""
-        else: return camera if camera in cameras else ""
-
+        if cameras is not None and camera in cameras:
+            return camera
+        else:
+            return ""
 
     @property
     def rate(self):
@@ -53,11 +53,9 @@ class Controller(object):
     def label(self):
         return self.label_pv.get()
 
-
     @property
     def normalisation(self):
         return self.normalisation_pv.get()
-
 
     @property
     def colourmap_name(self):
@@ -69,8 +67,11 @@ class Controller(object):
     def colourmap_data(self):
         """ Get the colour map, this is an array
 
-        :return: PV value or NONE if request timesout
+        :return: PV value or NONE if request timesout or
+            colourmap name unset
         """
-        pv_name = self._prefix + ":CMAP:" + str(self.colourmap_name).upper()
-        return epics.caget(pv_name, timeout=CA_TIMEOUT)
-
+        colourmap = None
+        if self.colourmap_name is not None:
+            pv_name = self._prefix + ":CMAP:" + str(self.colourmap_name).upper()
+            colourmap = epics.caget(pv_name, timeout=CA_TIMEOUT)
+        return colourmap
