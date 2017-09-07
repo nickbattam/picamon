@@ -41,8 +41,12 @@ class Camera(object):
         data = epics.caget(self.array_pvname)
 
         if x_size and y_size and data is not None:
-            reshaped = data.reshape(y_size, x_size).astype('int32')
-            image_data = np.transpose(reshaped)
+            try:
+                reshaped = data.reshape(y_size, x_size, refcheck=False).astype('int32')
+                image_data = np.transpose(reshaped)
+            except ValueError as ex:
+                # TODO: add logging
+                print "Skipping frame on reshape error", ex
 
         return image_data
 
