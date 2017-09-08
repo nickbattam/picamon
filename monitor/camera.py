@@ -42,8 +42,12 @@ class Camera(object):
 
         if x_size and y_size and data is not None:
 
-            image = data.reshape(y_size, x_size).astype('int32')
-            image = np.transpose(image)
+            try:
+                reshaped = data.reshape(y_size, x_size, refcheck=False).astype('int32')
+                image_data = np.transpose(reshaped)
+            except ValueError as ex:
+                # TODO: add logging
+                print "Skipping frame on reshape error", ex
 
-        return image
+        return image_data
 

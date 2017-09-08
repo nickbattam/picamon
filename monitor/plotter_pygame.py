@@ -117,7 +117,8 @@ class PyGamePlotter(object):
             # normalise data
             if self._normalisation == 1:
                 maximum = data.max()
-                if maximum>0: data = data * 255.0 / maximum
+                if maximum > 0:
+                    data = data * 255.0 / maximum
 
             # make surface from data
             surf = pygame.surfarray.make_surface(data)
