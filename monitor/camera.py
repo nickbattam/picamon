@@ -35,14 +35,15 @@ class Camera(object):
 
         :return: None or requested data
         """
-        image_data = None
+        image = None
         x_size = epics.caget(self.sizex_pvname)
         y_size = epics.caget(self.sizey_pvname)
         data = epics.caget(self.array_pvname)
 
         if x_size and y_size and data is not None:
-            reshaped = data.reshape(y_size, x_size).astype('int32')
-            image_data = np.transpose(reshaped)
 
-        return image_data
+            image = data.reshape(y_size, x_size).astype('int32')
+            image = np.transpose(image)
+
+        return image
 

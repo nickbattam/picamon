@@ -78,8 +78,8 @@ class PyGamePlotter(object):
         # keeping aspect ratio
         if self._aspect == 1:
 
-            dh = shape[0]
-            dw = shape[1]
+            dh = shape[1]
+            dw = shape[0]
             da = dw/dh
 
             sw = self._screen_size[0]
@@ -125,7 +125,7 @@ class PyGamePlotter(object):
             # set colourmap
             surf.set_palette(self._palette)
 
-            # calculate dimension an position depending on aspect ratio
+            # calculate dimension and position depending on aspect ratio
             (x, y, width, height) = self._calc_size_pos(data.shape)
 
             # rescale surface to appropriate dimension"
