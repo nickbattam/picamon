@@ -53,7 +53,7 @@ class Monitor(object):
 
                 # show and wait
                 self.plotter.show()
-                sleep(self.controller.rate)
+                if self.controller.rate is not None: sleep(self.controller.rate)
 
             except KeyboardInterrupt:
                 self.plotter.quit()

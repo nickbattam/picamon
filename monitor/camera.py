@@ -14,8 +14,6 @@ class Camera(object):
 
     def update_name(self, prefix):
         if prefix is not None and prefix != self._prefix:
-            # TODO: check the camera exists in <controller>:LIST:CAMERAS
-
             self._prefix = prefix
             self.array_pvname = "{0}:{1}".format(prefix, Camera.DATA_RECORD)
             self.sizex_pvname = "{0}:{1}".format(prefix, Camera.XSIZE_RECORD)
@@ -37,14 +35,19 @@ class Camera(object):
 
         :return: None or requested data
         """
-        image_data = None
+        image = None
         x_size = epics.caget(self.sizex_pvname)
         y_size = epics.caget(self.sizey_pvname)
         data = epics.caget(self.array_pvname)
 
         if x_size and y_size and data is not None:
-            reshaped = data.reshape(y_size, x_size).astype('int32')
-            image_data = np.transpose(reshaped)
+
+            try:
+                reshaped = data.reshape(y_size, x_size, refcheck=False).astype('int32')
+                image_data = np.transpose(reshaped)
+            except ValueError as ex:
+                # TODO: add logging
+                print "Skipping frame on reshape error", ex
 
         return image_data
 

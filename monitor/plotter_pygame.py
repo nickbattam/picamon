@@ -16,15 +16,21 @@ class PyGamePlotter(object):
         pygame.init()
         pygame.mouse.set_visible(False)
         pygame.display.set_caption(monitor)
-
         info = pygame.display.Info()
 
+        # set screen size and mode (fullscreen, window border)
         if fullscreen:
             self._screen_size = (info.current_w, info.current_h)
             self._screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN | pygame.NOFRAME)
         else:      
             self._screen_size = (600, 400)
             self._screen = pygame.display.set_mode(self._screen_size)
+
+        
+        # define font size as a function of screen size
+        # font 50 looks good with 600 pixel wide... linear extrapolation from there
+        self.font_size = int(self._screen_size[0] * 50.0 / 600.0)
+
 
         self._palette = DEFAULT_COLORMAP
         self._aspect = 0
@@ -33,7 +39,7 @@ class PyGamePlotter(object):
 
     def blank(self):
         self._screen.fill(COLOUR_BLACK)
-        font = pygame.font.Font(None, 50)
+        font = pygame.font.Font(None, self.font_size)
         text = font.render("No Camera Selected", 1, COLOUR_WHITE)
         textpos = text.get_rect()
         textpos.centerx = self._screen.get_rect().centerx
@@ -42,7 +48,7 @@ class PyGamePlotter(object):
         pygame.display.flip()
 
     def show_label(self, label):
-        font = pygame.font.Font(None, 50)
+        font = pygame.font.Font(None, self.font_size)
         text = font.render(label, 1, COLOUR_WHITE)
         self._screen.blit(text, (0, 0))
 
@@ -72,8 +78,8 @@ class PyGamePlotter(object):
         # keeping aspect ratio
         if self._aspect == 1:
 
-            dh = shape[0]
-            dw = shape[1]
+            dh = shape[1]
+            dw = shape[0]
             da = dw/dh
 
             sw = self._screen_size[0]
@@ -111,7 +117,8 @@ class PyGamePlotter(object):
             # normalise data
             if self._normalisation == 1:
                 maximum = data.max()
-                if maximum>0: data = data * 255.0 / maximum
+                if maximum > 0:
+                    data = data * 255.0 / maximum
 
             # make surface from data
             surf = pygame.surfarray.make_surface(data)
@@ -119,7 +126,7 @@ class PyGamePlotter(object):
             # set colourmap
             surf.set_palette(self._palette)
 
-            # calculate dimension an position depending on aspect ratio
+            # calculate dimension and position depending on aspect ratio
             (x, y, width, height) = self._calc_size_pos(data.shape)
 
             # rescale surface to appropriate dimension"
