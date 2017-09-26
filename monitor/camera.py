@@ -43,7 +43,7 @@ class Camera(object):
         if x_size and y_size and data is not None:
 
             try:
-                reshaped = data.reshape(y_size, x_size, refcheck=False).astype('int32')
+                reshaped = data.reshape(y_size, x_size).astype('int32')
                 image_data = np.transpose(reshaped)
             except ValueError as ex:
                 # TODO: add logging
