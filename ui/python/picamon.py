@@ -20,6 +20,7 @@ class PVWidget():
         self.pv.add_callback(self.onPVChanges)
 
     def onPVChanges(self, pvname=None, value=None, char_value=None, **kw):
+        print "onPVChanges"
         self.value = value
         self.stringvalue = ', '.join(map(str, self.value)) if self.pv.nelm > 1 else str(self.value)
         wx.CallAfter(self.updateContent)
@@ -59,7 +60,7 @@ class PVDropdownList(wx.Choice, PVWidget):
         for choice in list(filter(self.condition, self.value)): wx.Choice.Append(self, str(choice))
 
     def onSelection(self, event):
-        if self.writetopv: epics.PV(self.writetopv).put(event.GetEventObject().GetStringSelection())
+        if self.writetopv: self.writetopv.put(event.GetEventObject().GetStringSelection())
 
     def setWriteToPV(self, writetopv):
         self.writetopv = writetopv
@@ -86,12 +87,17 @@ class PiCaMonApp(wx.Frame):
         # place in UI layout
         vbox = wx.BoxSizer(wx.VERTICAL)
         
+        monitors_list = monitors_pv.get()
+        self.selected_pv = {}
+        for monitor in list(filter(lambda x: x!="", monitors_list)):
+            self.selected_pv[monitor] = epics.PV("%s:%s:CAMERA" % (self.prefix, monitor))
+
         # display the list of monitor/camera pairs
-        for monitor in list(filter(lambda x: x!="", monitors_pv.get())):
+        for monitor in list(filter(lambda x: x!="", monitors_list)):
             hbox = wx.BoxSizer(wx.HORIZONTAL)
             st = wx.StaticText(panel, label = monitor, style = wx.ALIGN_CENTRE)
             hbox.Add(st, 0, wx.ALL|wx.CENTER, 5) 
-            tu = PVTextUpdate(panel, "%s:%s:CAMERA" % (self.prefix, monitor))  
+            tu = PVTextUpdate(panel, self.selected_pv[monitor])  
             hbox.Add(tu, 0, wx.ALL|wx.CENTER, 5)
             vbox.Add(hbox, 1, wx.ALL|wx.EXPAND)
 
@@ -104,7 +110,8 @@ class PiCaMonApp(wx.Frame):
         panel.SetSizer(vbox)    
 
     def onMonitorSelection(self, event):
-        self.cameras.setWriteToPV("%s:%s:CAMERA" % (self.prefix, event.GetEventObject().GetStringSelection()))
+        monitor = event.GetEventObject().GetStringSelection()
+        self.cameras.setWriteToPV(self.selected_pv[monitor])
 
 
 if __name__ == '__main__':
