@@ -7,7 +7,7 @@ A Raspberry Pi based camera monitoring system. The idea is to be able to display
 
 [![Concept](https://j.gifs.com/82Ozxr.gif)](https://www.youtube.com/watch?v=pTWhWKSA5Z8)
 
-![GUI](screenshot.png?raw=true "Desktop UI")
+![GUI](ui/python/screenshot.png?raw=true "Desktop UI")
 
 
 ## Setup overview
