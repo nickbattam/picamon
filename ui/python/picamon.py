@@ -17,7 +17,7 @@ boldfont = wx.Font(12, wx.DECORATIVE, wx.NORMAL, wx.BOLD)
 normalfont =  wx.Font(12, wx.DECORATIVE, wx.NORMAL, wx.NORMAL)
 smallfont =  wx.Font(8, wx.DECORATIVE, wx.NORMAL, wx.NORMAL)
 
-frame = wx.Frame(None, -1, 'PiCaMon', size=(300, 220))
+frame = wx.Frame(None, -1, 'PiCaMon', size=(350, 250))
 panel = wx.Panel(frame, -1)
 vbox = wx.BoxSizer(wx.VERTICAL)
 
